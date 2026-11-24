@@ -6,11 +6,12 @@
 <title>Studio Inspiration</title>
 <style>
 *{box-sizing:border-box}
-body{font-family:Arial,sans-serif;background:#f5eee6;color:#49382e;padding:16px;margin:0}
-main{max-width:550px;margin:auto;background:white;padding:20px;border-radius:18px}
+body{font-family:Arial,sans-serif;background:#f5eee6;color:#49382e;margin:0;padding:16px}
+main{max-width:600px;margin:auto;background:white;padding:20px;border-radius:20px}
 h1{text-align:center;font-size:28px}
 h2{font-size:20px}
-input{max-width:100%;margin:18px 0}
+select,input{max-width:100%;margin:12px 0}
+select{width:100%;padding:14px;border:1px solid #d5c8bb;border-radius:10px;background:#faf7f2;font-size:16px;color:#49382e}
 img{display:block;width:auto;height:auto;max-width:100%;max-height:400px;margin:auto;border-radius:12px;cursor:crosshair}
 [hidden]{display:none!important}
 .palette{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin:12px 0}
@@ -20,29 +21,38 @@ img{display:block;width:auto;height:auto;max-width:100%;max-height:400px;margin:
 button.swatch{background:none;border:0;padding:0;color:inherit;cursor:pointer}
 .selected{display:flex;align-items:center;gap:14px;padding:12px;background:#f5eee6;border-radius:12px}
 #sample{width:65px;height:65px;border-radius:10px;border:1px solid #ddd}
-.harmony{padding:12px;border:1px solid #e6ded5;border-radius:12px;margin:12px 0}
+.harmony{padding:14px;border:1px solid #e6ded5;border-radius:12px;margin:12px 0}
+.advice{background:#f8f4ef;padding:12px;border-radius:8px;font-size:14px;line-height:1.6}
 small{color:#75675e}
 </style>
 </head>
 <body>
 <main>
 <h1>Studio Inspiration</h1>
-<p>Importe une photo et découvre les couleurs qui s'accordent ensemble.</p>
+<p>Trouve les couleurs et les associations qui te correspondent.</p>
+<label for="universe"><strong>Choisis ton univers</strong></label>
+<select id="universe">
+<option value="mode">Mode et vêtements</option>
+<option value="deco">Décoration intérieure</option>
+<option value="bijoux">Bijoux et accessoires</option>
+<option value="beaute">Beauté et maquillage</option>
+</select>
+<h2>Importe ta photo</h2>
 <input type="file" id="photo" accept="image/*">
-<img id="preview" alt="Photo importee" hidden>
+<img id="preview" alt="Photo importée" hidden>
 <p id="status">Choisis une photo.</p>
 <section id="results" hidden>
 <h2>Couleurs principales</h2>
 <div id="colors" class="palette"></div>
-<h2>Ta couleur selectionnee</h2>
+<h2>Ta couleur sélectionnée</h2>
 <div class="selected">
 <div id="sample"></div>
 <strong id="hexValue"></strong>
 </div>
-<h2>Harmonies de couleurs</h2>
+<h2>Harmonies et conseils</h2>
 <div id="harmonies"></div>
 </section>
-<small>Ta photo reste sur ton appareil. Les harmonies sont des suggestions.</small>
+<small>Ta photo reste sur ton appareil. Les associations proposées sont des inspirations.</small>
 </main>
 <script>
 const input=document.getElementById('photo');
@@ -50,9 +60,11 @@ const img=document.getElementById('preview');
 const status=document.getElementById('status');
 const colors=document.getElementById('colors');
 const results=document.getElementById('results');
+const universe=document.getElementById('universe');
 const canvas=document.createElement('canvas');
 const ctx=canvas.getContext('2d',{willReadFrequently:true});
 let url;
+let currentColor=null;
 function hex(rgb){
 return '#'+rgb.map(v=>Math.max(0,Math.min(255,Math.round(v))).toString(16).padStart(2,'0')).join('');
 }
@@ -62,6 +74,29 @@ return [1,3,5].map(i=>parseInt(h.slice(i,i+2),16));
 function mix(a,b,t){
 return hex(rgbFromHex(a).map((v,i)=>v*(1-t)+rgbFromHex(b)[i]*t));
 }
+function colorName(h){
+const names={
+'#f5f0e5':'écru',
+'#b89a62':'doré',
+'#252525':'noir',
+'#d8a6b2':'rose poudré',
+'#f5e9e2':'beige rosé',
+'#bdb6ae':'gris taupe',
+'#a5b39a':'vert sauge',
+'#d5bfa5':'beige naturel',
+'#faf7f0':'blanc cassé'
+};
+if(names[h.toLowerCase()])return names[h.toLowerCase()];
+const [r,g,b]=rgbFromHex(h);
+const max=Math.max(r,g,b),min=Math.min(r,g,b);
+if(max<45)return 'noir';
+if(min>230)return 'blanc';
+if(max-min<25)return max<110?'gris foncé':'gris clair';
+if(r>g&&g>b&&r-b<85)return 'beige chaud';
+if(r>=g&&r>=b)return b>g?'rose ou mauve':g>r*.75?'ocre':'rouge ou terracotta';
+if(g>=r&&g>=b)return 'vert';
+return r>g?'violet':'bleu';
+}
 function swatch(h,clickable){
 const box=document.createElement(clickable?'button':'div');
 box.className='swatch';
@@ -69,25 +104,41 @@ const chip=document.createElement('div');
 chip.className='chip';
 chip.style.background=h;
 const label=document.createElement('p');
-label.textContent=h;
-box.append(chip,label);
+label.textContent=colorName(h);
+const code=document.createElement('small');
+code.textContent=h;
+box.append(chip,label,code);
 if(clickable){
 box.type='button';
 box.onclick=()=>selectColor(h);
 }
 return box;
 }
+function advice(list){
+const [a,b,c,d]=list.map(colorName);
+switch(universe.value){
+case 'mode':
+return 'Garde le '+a+' comme couleur principale. Associe-le à un haut '+b+', des accessoires '+c+' et des chaussures '+d+'. Adapte les pièces au vêtement que tu possèdes.';
+case 'deco':
+return 'Utilise le '+a+' pour ton élément principal, le '+b+' pour les grandes surfaces, le '+c+' pour les textiles ou objets décoratifs et le '+d+' par petites touches.';
+case 'bijoux':
+return 'Associe ta pièce '+a+' à des accessoires '+b+'. Ajoute une touche '+c+' et utilise le '+d+' pour équilibrer la composition.';
+case 'beaute':
+return 'Inspire-toi du '+a+' pour ton look. Explore les nuances '+b+' et '+c+' pour le maquillage et le '+d+' en accent. Adapte les teintes à ta carnation et utilise uniquement des produits cosmétiques adaptés à la zone.';
+}
+}
 function selectColor(h){
+currentColor=h;
 document.getElementById('sample').style.background=h;
-document.getElementById('hexValue').textContent=h;
+document.getElementById('hexValue').textContent=colorName(h)+' — '+h;
 const out=document.getElementById('harmonies');
 out.replaceChildren();
 const rgb=rgbFromHex(h);
 const opposite=hex(rgb.map(v=>255-v));
 const neutral=Math.max(...rgb)-Math.min(...rgb)<35;
 const palettes=[
-['Chic et elegant',[h,'#F5F0E5','#B89A62','#252525']],
-['Doux et feminin',[h,neutral?'#D8A6B2':mix(h,'#FFFFFF',0.65),'#F5E9E2','#BDB6AE']],
+['Chic et élégant',[h,'#F5F0E5','#B89A62','#252525']],
+['Doux et féminin',[h,neutral?'#D8A6B2':mix(h,'#FFFFFF',0.65),'#F5E9E2','#BDB6AE']],
 ['Naturel et moderne',[h,neutral?'#A5B39A':mix(opposite,'#B5B09A',0.65),'#D5BFA5','#FAF7F0']]
 ];
 palettes.forEach(([name,list])=>{
@@ -98,12 +149,17 @@ title.textContent=name;
 const row=document.createElement('div');
 row.className='palette';
 list.forEach(c=>row.appendChild(swatch(c,false)));
-box.append(title,row);
+const tip=document.createElement('div');
+tip.className='advice';
+tip.textContent=advice(list);
+box.append(title,row,tip);
 out.appendChild(box);
 });
 }
+universe.onchange=()=>{if(currentColor)selectColor(currentColor)};
 input.onchange=function(){
 if(!input.files[0])return;
+currentColor=null;
 results.hidden=true;
 img.hidden=true;
 status.textContent='Analyse en cours...';
@@ -133,7 +189,7 @@ status.textContent='Touche une couleur directement sur ta photo.';
 status.textContent='Analyse impossible. Essaie une autre photo.';
 }
 };
-img.onerror=function(){status.textContent='Photo illisible. Essaie une autre image.';};
+img.onerror=function(){status.textContent='Photo illisible. Essaie une autre image.'};
 img.src=url;
 };
 img.addEventListener('click',function(e){
