@@ -6,28 +6,31 @@
 <title>Studio Inspiration</title>
 <style>
 *{box-sizing:border-box}
-body{font-family:Arial,sans-serif;background:#f5eee6;color:#49382e;margin:0;padding:16px}
-main{max-width:600px;margin:auto;background:white;padding:20px;border-radius:20px}
-h1{text-align:center}
+body{margin:0;padding:14px;background:#f2ece5;color:#49382e;font-family:Arial,sans-serif}
+main{max-width:600px;margin:auto;background:white;border-radius:20px;padding:20px}
+h1{text-align:center;font-family:Georgia,serif;font-size:30px}
 h2{font-size:20px}
-select{width:100%;padding:14px;margin:10px 0 20px;border:1px solid #d5c8bb;border-radius:10px;background:#faf7f2;font-size:16px;color:inherit}
+select{width:100%;padding:13px;margin:10px 0 18px;border:1px solid #d5c8bb;border-radius:10px;background:#faf7f2;font-size:16px;color:inherit}
 input{max-width:100%;margin:12px 0}
 img{display:block;max-width:100%;max-height:400px;margin:auto;border-radius:12px}
 [hidden]{display:none!important}
 .palette{display:flex;gap:6px;margin:15px 0}
 .swatch{flex:1;min-width:0;text-align:center;font-size:11px;overflow-wrap:anywhere;cursor:pointer}
-.chip{height:55px;border-radius:8px;border:1px solid #ddd}
-.harmony{padding:14px;border:1px solid #e6ded5;border-radius:12px;margin:16px 0}
-.advice,.visual{background:#f8f4ef;padding:12px;border-radius:10px;margin:12px 0;line-height:1.7}
-.visual{display:grid;grid-template-columns:1fr 1fr;gap:12px;text-align:center;font-size:12px}
-svg{width:100%;height:120px}
+.chip{height:50px;border-radius:8px;border:1px solid #ddd}
+.harmony{padding:14px;border:1px solid #e6ded5;border-radius:14px;margin:16px 0}
+.advice{background:#f8f4ef;padding:12px;border-radius:10px;margin:12px 0;line-height:1.7;font-size:14px}
+.visual{display:grid;grid-template-columns:1fr 1fr;gap:8px;background:#f5f0e9;padding:10px;border-radius:12px;text-align:center;font-size:12px}
+.item{padding:5px}
+svg{display:block;width:100%;height:auto}
 small{color:#75675e}
+.selected{display:flex;align-items:center;gap:12px;padding:12px;background:#f5eee6;border-radius:12px}
+.sample{width:65px;height:65px;border-radius:10px;border:1px solid #ddd}
 </style>
 </head>
 <body>
 <main>
 <h1>Studio Inspiration</h1>
-<p>Trouve les couleurs et les associations qui te correspondent.</p>
+<p>Compose tes harmonies et découvre de nouvelles associations.</p>
 <strong>Choisis ton univers</strong>
 <select id="universe">
 <option value="mode">Mode et vêtements</option>
@@ -39,17 +42,17 @@ small{color:#75675e}
 <select id="piece"></select>
 <h2>Importe ta photo</h2>
 <input type="file" id="photo" accept="image/*">
-<img id="preview" hidden>
+<img id="preview" alt="Photo importée" hidden>
 <p id="status">Choisis une photo.</p>
 <section id="results" hidden>
 <h2>Couleurs principales</h2>
 <div id="colors" class="palette"></div>
 <h2>Ta couleur sélectionnée</h2>
-<div id="selected" class="advice"></div>
+<div id="selected" class="selected"></div>
 <h2>Harmonies et inspirations</h2>
 <div id="harmonies"></div>
 </section>
-<small>Ta photo reste sur ton appareil. Les illustrations sont stylisées.</small>
+<small>Ta photo reste sur ton appareil. Les visuels sont des illustrations et non des photographies.</small>
 </main>
 <script>
 const $=id=>document.getElementById(id);
@@ -61,7 +64,7 @@ beaute:['Rouge à lèvres','Fard à paupières','Blush','Vernis']
 };
 const canvas=document.createElement('canvas');
 const ctx=canvas.getContext('2d',{willReadFrequently:true});
-let current=null,url;
+let current=null,url,uid=0;
 function pieces(){
 $('piece').replaceChildren();
 items[$('universe').value].forEach(n=>$('piece').add(new Option(n,n)));
@@ -96,38 +99,100 @@ e.innerHTML='<div class="chip" style="background:'+h+'"></div><p>'+name(h)+'</p>
 if(click)e.onclick=()=>show(h);
 return e;
 }
-const shapes={
-'Haut / Pull':'<path d="M30 25 L45 15 L60 28 L75 15 L90 25 L115 50 L95 65 L85 50 V110 H35 V50 L25 65 L5 50 Z"/>',
-'Pantalon / Jean':'<path d="M35 10 H85 L100 115 H65 L60 50 L55 115 H20 Z"/>',
-'Robe':'<path d="M40 10 H50 L60 30 L70 10 H80 L75 50 L105 115 H15 L45 50 Z"/>',
-'Jupe':'<path d="M35 20 H85 L110 110 H10 Z"/>',
-'Veste / Manteau':'<path d="M35 10 L60 30 L85 10 L115 85 L95 95 L85 60 V115 H35 V60 L25 95 L5 85 Z"/><path d="M60 30 V115" fill="none"/>',
-'Sac':'<path d="M35 45 Q35 0 60 0 Q85 0 85 45" fill="none" stroke-width="6"/><rect x="15" y="40" width="90" height="65" rx="10"/>',
-'Chaussures':'<path d="M10 25 H40 L55 50 L100 65 Q115 80 100 85 H10 Z"/><path d="M25 65 H55 L70 85 L115 100 V115 H25 Z"/>',
-'Autre accessoire':'<path d="M30 10 H70 L100 110 H70 L50 55 L30 110 H5 Z"/>',
-'Canapé':'<rect x="10" y="25" width="100" height="80" rx="12"/><rect x="2" y="60" width="22" height="50" rx="8"/><rect x="96" y="60" width="22" height="50" rx="8"/><rect x="25" y="70" width="70" height="35" rx="5"/>',
-'Fauteuil':'<rect x="25" y="15" width="70" height="95" rx="15"/><rect x="10" y="60" width="25" height="50" rx="8"/><rect x="85" y="60" width="25" height="50" rx="8"/>',
-'Mur':'<rect x="5" y="5" width="110" height="110"/><rect x="40" y="30" width="40" height="45" fill="#fff"/>',
-'Tapis':'<ellipse cx="60" cy="60" rx="55" ry="40"/>',
-'Rideaux':'<path d="M10 10 H55 L40 110 H5 Z M65 10 H110 L115 110 H80 Z"/>',
-'Meuble':'<rect x="15" y="20" width="90" height="90"/><path d="M60 20 V110 M15 60 H105" fill="none"/>',
-'Coussins':'<rect x="10" y="20" width="65" height="65" rx="10"/><rect x="50" y="55" width="65" height="60" rx="10"/>',
-'Collier':'<path d="M20 5 Q10 80 60 90 Q110 80 100 5" fill="none" stroke-width="6"/><path d="M60 75 L80 95 L60 115 L40 95 Z"/>',
-'Bracelet':'<ellipse cx="60" cy="60" rx="45" ry="35" fill="none" stroke-width="12"/>',
-'Bague':'<circle cx="60" cy="75" r="32" fill="none" stroke-width="10"/><path d="M60 10 L80 30 L60 50 L40 30 Z"/>',
-'Boucles d’oreilles':'<circle cx="30" cy="25" r="12" fill="none"/><ellipse cx="30" cy="65" rx="15" ry="25"/><circle cx="90" cy="25" r="12" fill="none"/><ellipse cx="90" cy="65" rx="15" ry="25"/>',
-'Montre':'<rect x="45" y="0" width="30" height="120" rx="5"/><circle cx="60" cy="60" r="28" fill="#faf7f0"/>',
-'Rouge à lèvres':'<rect x="40" y="65" width="40" height="50" rx="4" fill="#333"/><path d="M45 65 V25 L75 10 V65 Z"/>',
-'Fard à paupières':'<rect x="10" y="20" width="100" height="80" rx="10" fill="#333"/><rect x="20" y="30" width="80" height="60" rx="6"/>',
-'Blush':'<circle cx="60" cy="60" r="52" fill="#333"/><circle cx="60" cy="60" r="42"/>',
-'Vernis':'<rect x="45" y="5" width="30" height="40" fill="#333"/><rect x="30" y="40" width="60" height="75" rx="10"/>'
-};
+function draw(n,c){
+const id='g'+(++uid),light=mix(c,'#ffffff',.28),dark=mix(c,'#000000',.32);
+const f='url(#'+id+')';
+const path=(d,fill=f)=>'<path d="'+d+'" fill="'+fill+'" stroke="'+dark+'" stroke-width=".8" stroke-linejoin="round"/>';
+const line=d=>'<path d="'+d+'" fill="none" stroke="'+dark+'" stroke-width=".8" opacity=".6"/>';
+const rect=(x,y,w,h,r,fill=f)=>'<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" rx="'+r+'" fill="'+fill+'" stroke="'+dark+'" stroke-width=".7"/>';
+const ellipse=(x,y,rx,ry,fill=f)=>'<ellipse cx="'+x+'" cy="'+y+'" rx="'+rx+'" ry="'+ry+'" fill="'+fill+'" stroke="'+dark+'" stroke-width=".7"/>';
+let a='';
+switch(n){
+case 'Haut / Pull':
+a=path('M43 23 Q52 19 60 22 Q68 19 77 23 L96 32 L116 91 L99 97 L82 57 L87 121 Q60 126 33 121 L38 57 L21 97 L4 91 L24 32 Z')+
+path('M43 23 Q60 42 77 23 L72 20 Q60 31 48 20 Z',dark)+
+rect(34,111,52,11,2)+rect(5,85,18,10,2)+rect(97,85,18,10,2)+line('M38 49 Q43 76 39 108 M82 49 Q77 76 81 108');
+for(let x=45;x<80;x+=5)a+=line('M'+x+' 40 V109');
+break;
+case 'Pantalon / Jean':
+a=path('M33 13 Q60 9 87 13 L100 128 L69 129 L60 54 L51 129 L20 128 Z')+rect(33,13,54,11,2)+line('M60 24 V48 M38 26 Q39 43 53 43 M82 26 Q81 43 67 43 M40 48 L34 125 M80 48 L86 125 M22 122 H50 M70 122 H98')+ellipse(60,19,2,2,'#c5aa7c');
+break;
+case 'Robe':
+a=path('M43 12 L53 12 Q60 34 67 12 H77 L82 48 Q78 63 107 128 Q60 137 13 128 Q42 63 38 48 Z')+line('M39 51 Q60 56 81 51 M47 57 Q42 90 34 126 M60 57 V130 M73 57 Q78 90 86 126');
+break;
+case 'Jupe':
+a=path('M37 20 H83 L111 125 Q60 133 9 125 Z')+rect(37,20,46,10,2)+line('M44 31 L29 124 M53 31 L48 127 M67 31 L72 127 M76 31 L91 124');
+break;
+case 'Veste / Manteau':
+a=path('M38 15 L53 9 L67 9 L82 15 L96 26 L116 106 L98 111 L82 64 L87 130 H33 L38 64 L22 111 L4 106 L24 26 Z')+path('M53 9 L40 38 L53 50 L47 61 L60 85 L60 24 Z',light)+path('M67 9 L80 38 L67 50 L73 61 L60 85 L60 24 Z',light)+line('M60 85 V130 M39 91 H53 M67 91 H81')+ellipse(63,91,2,2,dark)+ellipse(63,108,2,2,dark);
+break;
+case 'Sac':
+a='<path d="M35 53 V38 Q35 13 60 13 Q85 13 85 38 V53" fill="none" stroke="'+dark+'" stroke-width="8"/><path d="M35 53 V38 Q35 13 60 13 Q85 13 85 38 V53" fill="none" stroke="'+light+'" stroke-width="4"/>'+path('M20 48 H100 L110 119 Q60 130 10 119 Z')+path('M20 48 H100 L94 80 Q60 96 26 80 Z')+rect(53,77,14,10,2,'#c9aa70')+line('M17 112 Q60 120 103 112');
+break;
+case 'Chaussures':
+for(let i=0;i<2;i++){
+a+='<g transform="translate('+i*15+' '+i*42+')">'+path('M12 26 Q26 20 37 26 L45 50 Q62 60 89 61 Q109 64 106 76 Q60 84 12 78 Z')+path('M12 73 Q60 79 106 71 V79 Q60 88 12 82 Z',dark)+path('M38 37 L56 53 L43 59 L27 39 Z',light)+rect(40,49,12,5,1,'#c9aa70')+'</g>';
+}
+break;
+case 'Autre accessoire':
+a=path('M26 15 Q60 2 94 15 L104 122 L73 132 L59 51 L43 132 L12 122 Z')+line('M34 20 L22 121 M85 20 L94 121');
+break;
+case 'Canapé':
+a=rect(13,32,94,65,12)+rect(6,65,22,43,8)+rect(92,65,22,43,8)+rect(28,77,32,26,5)+rect(60,77,32,26,5)+rect(18,108,6,9,1,dark)+rect(96,108,6,9,1,dark);
+break;
+case 'Fauteuil':
+a=rect(26,20,68,80,16)+rect(12,65,25,45,9)+rect(83,65,25,45,9)+rect(37,77,46,30,8);
+break;
+case 'Mur':
+a=rect(5,10,110,110,2)+rect(40,35,40,50,1,'#faf7f0');
+break;
+case 'Tapis':
+a=ellipse(60,70,55,42)+ellipse(60,70,47,34,'none');
+break;
+case 'Rideaux':
+a=path('M10 10 H55 L40 120 H5 Z M65 10 H110 L115 120 H80 Z')+line('M22 12 L17 118 M40 12 L31 118 M80 12 L89 118 M100 12 L105 118');
+break;
+case 'Meuble':
+a=rect(15,20,90,90,4)+line('M60 20 V110 M15 60 H105')+ellipse(52,82,2,2,dark)+ellipse(68,82,2,2,dark);
+break;
+case 'Coussins':
+a=rect(10,20,65,65,12)+rect(50,55,65,60,12);
+break;
+case 'Collier':
+a='<path d="M20 5 Q10 80 60 90 Q110 80 100 5" fill="none" stroke="'+c+'" stroke-width="6"/>'+path('M60 75 L80 95 L60 115 L40 95 Z');
+break;
+case 'Bracelet':
+a='<ellipse cx="60" cy="65" rx="45" ry="35" fill="none" stroke="'+f+'" stroke-width="13"/>';
+break;
+case 'Bague':
+a='<circle cx="60" cy="80" r="32" fill="none" stroke="'+f+'" stroke-width="10"/>'+path('M60 10 L80 30 L60 50 L40 30 Z');
+break;
+case 'Boucles d’oreilles':
+a=ellipse(30,28,12,12,'none')+ellipse(30,70,15,25)+ellipse(90,28,12,12,'none')+ellipse(90,70,15,25);
+break;
+case 'Montre':
+a=rect(45,5,30,125,5)+ellipse(60,65,28,28,'#faf7f0')+line('M60 45 V65 L75 75');
+break;
+case 'Rouge à lèvres':
+a=rect(40,65,40,60,4,'#333333')+rect(44,55,32,15,1,'#c9aa70')+path('M47 55 V25 L73 10 V55 Z');
+break;
+case 'Fard à paupières':
+a=rect(10,20,100,90,10,'#333333')+rect(20,30,80,70,6);
+break;
+case 'Blush':
+a=ellipse(60,65,52,52,'#333333')+ellipse(60,65,42,42);
+break;
+case 'Vernis':
+a=rect(45,5,30,40,4,'#333333')+rect(30,40,60,85,10);
+break;
+default:a=rect(15,15,90,90,12);
+}
+return '<svg viewBox="0 0 120 145" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="'+id+'" x1="0%" y1="0%" x2="100%" y2="25%"><stop offset="0%" stop-color="'+dark+'"/><stop offset="32%" stop-color="'+light+'"/><stop offset="62%" stop-color="'+c+'"/><stop offset="100%" stop-color="'+dark+'"/></linearGradient><filter id="s'+id+'" x="-20%" y="-20%" width="150%" height="150%"><feDropShadow dx="1.5" dy="3" stdDeviation="2" flood-opacity=".18"/></filter></defs><g filter="url(#s'+id+')">'+a+'</g></svg>';
+}
 function roles(){
 const p=$('piece').value,u=$('universe').value;
 let rest;
-if(u==='mode'){
-rest=p==='Robe'?['Veste / Manteau','Sac','Chaussures']:p==='Jupe'?['Haut / Pull','Sac','Chaussures']:['Haut / Pull','Pantalon / Jean','Sac','Chaussures'];
-}
+if(u==='mode')rest=p==='Robe'?['Veste / Manteau','Sac','Chaussures']:p==='Jupe'?['Haut / Pull','Sac','Chaussures']:['Haut / Pull','Pantalon / Jean','Sac','Chaussures'];
 if(u==='deco')rest=['Canapé','Mur','Coussins','Tapis'];
 if(u==='bijoux')rest=['Collier','Bracelet','Bague','Boucles d’oreilles'];
 if(u==='beaute')rest=items.beaute;
@@ -135,7 +200,7 @@ return [p,...rest.filter(n=>n!==p).slice(0,3)];
 }
 function show(h){
 current=h;
-$('selected').replaceChildren(swatch(h,false));
+$('selected').innerHTML='<div class="sample" style="background:'+h+'"></div><strong>'+name(h)+' — '+h+'</strong>';
 const neutral=Math.max(...rgb(h))-Math.min(...rgb(h))<35;
 const opposite=hex(rgb(h).map(v=>255-v));
 const palettes=[
@@ -158,7 +223,8 @@ const advice=document.createElement('div');
 advice.className='advice';
 roles().forEach((n,i)=>{
 const item=document.createElement('div');
-item.innerHTML='<svg viewBox="0 0 120 120"><g fill="'+list[i]+'" stroke="#776c63" stroke-width="1.4" stroke-linejoin="round">'+(shapes[n]||'<rect x="15" y="15" width="90" height="90" rx="12"/>')+'</g></svg><div>'+n+'</div>';
+item.className='item';
+item.innerHTML=draw(n,list[i])+'<div>'+n+'</div>';
 visual.append(item);
 const line=document.createElement('div');
 line.textContent=(i===0?'Ton élément — ':'')+n+' : '+name(list[i]);
