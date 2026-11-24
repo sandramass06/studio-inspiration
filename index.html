@@ -395,7 +395,7 @@ if($('universe').value!=='mode'||$('piece').value!=='Gilet / Cardigan')return;
 document.querySelectorAll('.harmony').forEach(box=>{
 const visual=box.querySelector('.visual');
 const advice=box.querySelector('.advice');
-const chip=box.querySelectorAll('.chip')[1];
+const chip=box.querySelectorAll('.chip')[box.textContent.includes('Chic et élégant')?1:box.textContent.includes('Doux et féminin')?2:3];
 if(!visual||!advice||!chip)return;
 const c=hex(chip.style.backgroundColor.match(/\d+/g).slice(0,3).map(Number));
 const item=document.createElement('div');
