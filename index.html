@@ -332,6 +332,22 @@ return n;
 };
 ids['Robe']=ids['Robe midi'];
 ids['Veste / Manteau']=ids['Blazer'];
+  roles=function(style){
+const p=$('piece').value;
+if($('universe').value!=='mode')return rolesV10(style);
+const top=['Chemisier','Haut / Pull','Haut / Pull'][style];
+const bottom=['Pantalon / Jean','Jupe','Jean droit'][style];
+const bag=['Sac','Petit sac','Sac souple'][style];
+const shoes=['Escarpins','Ballerines','Baskets'][style];
+const jacket=['Blazer','Trench','Trench'][style];
+if(p==='Robe')return [p,jacket,bag,shoes];
+if(p==='Veste / Manteau')return [p,bottom,bag,shoes];
+if(p==='Haut / Pull')return [p,bottom,bag,shoes];
+if(p==='Pantalon / Jean'||p==='Jupe')return [p,top,bag,shoes];
+if(p==='Chaussures')return [p,top,bottom,bag];
+if(p==='Sac')return [p,top,bottom,shoes];
+return rolesV10(style);
+};
 </script>
 </body>
 </html>
