@@ -211,6 +211,19 @@ const palettes=[
 ['Doux et féminin',[h,neutral?'#d8a6b2':mix(h,'#ffffff',.65),'#f5e9e2','#bdb6ae']],
 ['Naturel et moderne',[h,neutral?'#a5b39a':mix(opposite,'#b5b09a',.65),'#d5bfa5','#faf7f0']]
 ];
+  palettes.forEach(([title,list],style)=>{
+const alternatives=[
+['#722f37','#243b53','#b89a62','#f5f0e5'],
+['#d8a6b2','#bdb6ae','#c5b5d8','#f5e9e2'],
+['#a5b39a','#d5bfa5','#526b65','#faf7f0']
+][style];
+const distance=(a,b)=>Math.hypot(...rgb(a).map((v,i)=>v-rgb(b)[i]));
+for(let i=1;i<list.length;i++){
+if(list.slice(0,i).some(c=>distance(c,list[i])<55)){
+list[i]=alternatives.find(a=>list.slice(0,i).every(c=>distance(c,a)>=55))||list[i];
+}
+}
+});
 const own=document.querySelector('input[name="display"]:checked').value==='photo';
 $('harmonies').replaceChildren();
 palettes.forEach(([title,list],style)=>{
