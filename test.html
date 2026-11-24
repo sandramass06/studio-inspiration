@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Studio Inspiration - Test photo</title>
+<style>
+*{box-sizing:border-box}
+body{background:#f5eee6;color:#49382e;font-family:Arial,sans-serif;margin:0;padding:15px}
+main{max-width:600px;margin:auto;background:white;border-radius:20px;padding:20px}
+h1{text-align:center;font-family:Georgia,serif}
+canvas{display:block;width:100%;height:auto;border-radius:12px;margin:15px 0;background:#fff}
+input{max-width:100%;margin:12px 0}
+button{width:100%;padding:12px;border:0;border-radius:8px;background:#49382e;color:white;font-size:16px}
+.palette{display:flex;gap:8px;margin:15px 0}
+.palette button{height:45px;border:1px solid #ccc;padding:0}
+label{display:block;margin-top:15px}
+input[type=color]{width:100%;height:50px}
+small{color:#75675e}
+</style>
+</head>
+<body>
+<main>
+<h1>Studio Inspiration</h1>
+<h2>Test de recoloration photo</h2>
+<p>Importe une photo d'un vêtement uni, de préférence gris clair sur fond blanc.</p>
+<input type="file" id="photo" accept="image/*">
+<div id="zone" hidden>
+<h3>Photo originale</h3>
+<canvas id="original"></canvas>
+<h3>Choisis une nouvelle couleur</h3>
+<div class="palette" id="palette"></div>
+<label>Couleur personnalisée</label>
+<input type="color" id="color" value="#a5b39a">
+<h3>Résultat</h3>
+<canvas id="result"></canvas>
+<button id="save">Enregistrer le résultat</button>
+</div>
+<p id="status"></p>
+<small>Test expérimental : les fonds blancs sont préservés approximativement. Ta photo reste sur ton appareil.</small>
+</main>
+<script>
+const $=id=>document.getElementById(id);
+const original=$('original'),result=$('result');
+const ctx=original.getContext('2d',{willReadFrequently:true});
+const out=result.getContext('2d');
+let source=null;
+function recolor(h){
+if(!source)return;
+const target=[1,3,5].map(i=>parseInt(h.slice(i,i+2),16));
+const data=new ImageData(new Uint8ClampedArray(source.data),source.width,source.height);
+for(let i=0;i<data.data.length;i+=4){
+const r=source.data[i],g=source.data[i+1],b=source.data[i+2];
+const min=Math.min(r,g,b);
+const lum=.2126*r+.7152*g+.0722*b;
+const mask=Math.max(0,Math.min(1,(248-min)/30));
+for(let j=0;j<3;j++){
+let v=lum<160?target[j]*lum/160:target[j]+(255-target[j])*(lum-160)/95;
+data.data[i+j]=source.data[i+j]*(1-mask)+v*mask;
+}
+}
+out.putImageData(data,0,0);
+}
+['#202020','#d8a6b2','#a5b39a','#c4a079','#53759b','#873c46'].forEach(h=>{
+const b=document.createElement('button');
+b.style.background=h;
+b.setAttribute('aria-label',h);
+b.onclick=()=>{$('color').value=h;recolor(h)};
+$('palette').append(b);
+});
+$('color').oninput=e=>recolor(e.target.value);
+$('photo').onchange=function(){
+if(!this.files[0])return;
+const img=new Image();
+const url=URL.createObjectURL(this.files[0]);
+img.onload=()=>{
+const scale=Math.min(1,1000/Math.max(img.width,img.height));
+original.width=result.width=Math.max(1,Math.round(img.width*scale));
+original.height=result.height=Math.max(1,Math.round(img.height*scale));
+ctx.drawImage(img,0,0,original.width,original.height);
+source=ctx.getImageData(0,0,original.width,original.height);
+$('zone').hidden=false;
+$('status').textContent='';
+recolor($('color').value);
+URL.revokeObjectURL(url);
+};
+img.onerror=()=>{$('status').textContent='Photo illisible.';URL.revokeObjectURL(url)};
+img.src=url;
+};
+$('save').onclick=()=>{
+if(!source)return;
+const a=document.createElement('a');
+a.download='studio-inspiration.png';
+a.href=result.toDataURL('image/png');
+a.click();
+};
+</script>
+</body>
+</html>
