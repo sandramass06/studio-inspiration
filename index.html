@@ -272,43 +272,4 @@ if(d[3]>=128)show(hex([d[0],d[1],d[2]]));
 };
 </script>
 </body>
-</html>ent)show(current)};
-$('piece').onchange=()=>{if(current)show(current)};
-$('photo').onchange=function(){
-if(!this.files[0])return;
-current=null;$('results').hidden=true;$('preview').hidden=true;
-$('status').textContent='Analyse en cours...';
-if(url)URL.revokeObjectURL(url);
-url=URL.createObjectURL(this.files[0]);
-const img=$('preview');
-img.onload=()=>{
-try{
-const s=Math.min(1,800/Math.max(img.naturalWidth,img.naturalHeight));
-canvas.width=Math.max(1,Math.round(img.naturalWidth*s));canvas.height=Math.max(1,Math.round(img.naturalHeight*s));
-ctx.drawImage(img,0,0,canvas.width,canvas.height);
-const d=ctx.getImageData(0,0,canvas.width,canvas.height).data,counts={};
-for(let i=0;i<d.length;i+=16){
-if(d[i+3]<128)continue;
-const h=hex([d[i],d[i+1],d[i+2]].map(v=>Math.round(v/32)*32));
-counts[h]=(counts[h]||0)+1;
-}
-const top=Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,5);
-$('colors').replaceChildren();top.forEach(([h])=>$('colors').append(swatch(h,true)));
-img.hidden=false;$('results').hidden=false;
-show(top.length?top[0][0]:'#808080');
-$('status').textContent='Touche directement la couleur de ton vêtement.';
-}catch(e){$('status').textContent='Analyse impossible.'}
-};
-img.onerror=()=>$('status').textContent='Photo illisible.';
-img.src=url;
-};
-$('preview').onclick=function(e){
-const r=this.getBoundingClientRect();
-const x=Math.max(0,Math.min(canvas.width-1,Math.floor((e.clientX-r.left)/r.width*canvas.width)));
-const y=Math.max(0,Math.min(canvas.height-1,Math.floor((e.clientY-r.top)/r.height*canvas.height)));
-const d=ctx.getImageData(x,y,1,1).data;
-if(d[3]>=128)show(hex([d[0],d[1],d[2]]));
-};
-</script>
-</body>
 </html>
