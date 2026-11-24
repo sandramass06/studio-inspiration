@@ -19,7 +19,7 @@ input{max-width:100%;margin:12px 0}
 .chip{height:48px;border-radius:8px;border:1px solid #ddd}
 .harmony{padding:12px;border:1px solid #e6ded5;border-radius:14px;margin:16px 0}
 .advice,.choice{background:#f5eee6;padding:12px;border-radius:10px;margin:12px 0;line-height:1.6;font-size:14px}
-.visual{display:grid;grid-template-columns:1fr 1fr;gap:8px;background:#faf8f5;padding:8px;border-radius:12px;text-align:center;font-size:12px}
+.visual{display:grid;grid-template-columns:1fr 1fr;gap:14px;background:#faf8f5;padding:10px;border-radius:12px;text-align:center;font-size:12px}
 .holder{height:145px;display:flex;align-items:center;justify-content:center;margin-bottom:5px}
 .holder canvas,.holder img{max-width:100%;max-height:100%;object-fit:contain}
 .selected{display:flex;align-items:center;gap:12px;padding:12px;background:#f5eee6;border-radius:12px}
@@ -54,13 +54,12 @@ small{color:#75675e}
 <strong>Personnalise tes inspirations</strong>
 <label><input type="radio" name="display" value="photo" checked> Utiliser ma propre photo</label>
 <label><input type="radio" name="display" value="model"> Utiliser le modèle photoréaliste</label>
-<small>Ta photo conserve son arrière-plan et ses couleurs.</small>
 </div>
 <h2>Harmonies et inspirations</h2>
 <div id="harmonies"></div>
 </section>
 <small>Ta photo reste sur ton appareil. Modèles générés par IA. Couleurs approximatives.</small>
-<p><small>Version 0.8</small></p>
+<p><small>Version 0.9</small></p>
 </main>
 <script>
 const $=id=>document.getElementById(id);
@@ -71,10 +70,16 @@ bijoux:['Collier','Bracelet','Bague','Boucles d’oreilles','Montre'],
 beaute:['Rouge à lèvres','Fard à paupières','Blush','Vernis']
 };
 const ids={
-'Haut / Pull':'00000000d6bc8210af2e6f7929f20',
-'Sac':'0000000063488210b3e7e3004404',
-'Chaussures':'00000000c3948210abe5c7fac8bd',
-'Pantalon / Jean':'0000000098e48210b53b6381167e'
+'Haut / Pull':'00000000d6bc8210',
+'Sac':'0000000063488210',
+'Chaussures':'00000000c3948210',
+'Pantalon / Jean':'0000000098e48210',
+'Jupe':'00000000b5e08210',
+'Petit sac':'00000000a12c8210',
+'Ballerines':'00000000b9408210',
+'Jean droit':'00000000d3988210',
+'Baskets':'00000000b3a08210',
+'Sac souple':'000000000c088210'
 };
 const cache={};
 let filesPromise;
@@ -152,7 +157,7 @@ if(!src.data[i+3])continue;
 const r=src.data[i],g=src.data[i+1],b=src.data[i+2];
 const delta=.2126*r+.7152*g+.0722*b-a.mean;
 let mask=Math.max(0,Math.min(1,(253-Math.min(r,g,b))/20));
-if(n==='Sac'&&Math.max(r,g,b)-Math.min(r,g,b)>25&&r>b+15)mask*=.15;
+if((n==='Sac'||n==='Petit sac')&&Math.max(r,g,b)-Math.min(r,g,b)>25&&r>b+15)mask*=.15;
 for(let j=0;j<3;j++){
 const center=target[j]*(light>220?.94:1);
 const v=Math.max(0,Math.min(255,center+delta*(delta<0?(light<65?.35:.78):(light<65?.5:.4))));
@@ -176,12 +181,22 @@ e.innerHTML='<div class="chip" style="background:'+h+'"></div><p>'+name(h)+'</p>
 if(click)e.onclick=()=>show(h);
 return e;
 }
-function roles(){
+function roles(style){
 const p=$('piece').value,u=$('universe').value;
-let rest=u==='mode'?['Haut / Pull','Pantalon / Jean','Sac','Chaussures']:u==='deco'?['Canapé','Mur','Coussins','Tapis']:u==='bijoux'?items.bijoux:items.beaute;
-if(p==='Robe')rest=['Veste / Manteau','Sac','Chaussures'];
-if(p==='Jupe')rest=['Haut / Pull','Sac','Chaussures'];
+if(u!=='mode'){
+const rest=u==='deco'?['Canapé','Mur','Coussins','Tapis']:items[u];
 return [p,...rest.filter(n=>n!==p).slice(0,3)];
+}
+const bottom=['Pantalon / Jean','Jupe','Jean droit'][style];
+const bag=['Sac','Petit sac','Sac souple'][style];
+const shoes=['Chaussures','Ballerines','Baskets'][style];
+if(p==='Haut / Pull')return [p,bottom,bag,shoes];
+if(p==='Pantalon / Jean'||p==='Jupe')return [p,'Haut / Pull',bag,shoes];
+if(p==='Sac')return [p,'Haut / Pull',bottom,shoes];
+if(p==='Chaussures')return [p,'Haut / Pull',bottom,bag];
+if(p==='Robe')return [p,'Veste / Manteau',bag,shoes];
+if(p==='Veste / Manteau')return [p,bottom,bag,shoes];
+return [p,'Haut / Pull',bottom,shoes];
 }
 function show(h){
 current=h;
@@ -195,14 +210,14 @@ const palettes=[
 ];
 const own=document.querySelector('input[name="display"]:checked').value==='photo';
 $('harmonies').replaceChildren();
-palettes.forEach(([title,list])=>{
+palettes.forEach(([title,list],style)=>{
 const box=document.createElement('div');box.className='harmony';
 const head=document.createElement('strong');head.textContent=title;
 const row=document.createElement('div');row.className='palette';
 list.forEach(c=>row.append(swatch(c,false)));
 const visual=document.createElement('div');visual.className='visual';
 const advice=document.createElement('div');advice.className='advice';
-roles().forEach((n,i)=>{
+roles(style).forEach((n,i)=>{
 const item=document.createElement('div');
 const holder=document.createElement('div');holder.className='holder';
 const label=document.createElement('div');label.textContent=n;
@@ -218,6 +233,46 @@ box.append(head,row,visual,advice);$('harmonies').append(box);
 }
 document.querySelectorAll('input[name="display"]').forEach(r=>r.onchange=()=>{if(current)show(current)});
 $('universe').onchange=()=>{pieces();if(current)show(current)};
+$('piece').onchange=()=>{if(current)show(current)};
+$('photo').onchange=function(){
+if(!this.files[0])return;
+current=null;$('results').hidden=true;$('preview').hidden=true;
+$('status').textContent='Analyse en cours...';
+if(url)URL.revokeObjectURL(url);
+url=URL.createObjectURL(this.files[0]);
+const img=$('preview');
+img.onload=()=>{
+try{
+const s=Math.min(1,800/Math.max(img.naturalWidth,img.naturalHeight));
+canvas.width=Math.max(1,Math.round(img.naturalWidth*s));canvas.height=Math.max(1,Math.round(img.naturalHeight*s));
+ctx.drawImage(img,0,0,canvas.width,canvas.height);
+const d=ctx.getImageData(0,0,canvas.width,canvas.height).data,counts={};
+for(let i=0;i<d.length;i+=16){
+if(d[i+3]<128)continue;
+if(Math.min(d[i],d[i+1],d[i+2])>245)continue;
+const h=hex([d[i],d[i+1],d[i+2]].map(v=>Math.round(v/32)*32));
+counts[h]=(counts[h]||0)+1;
+}
+const top=Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,5);
+$('colors').replaceChildren();top.forEach(([h])=>$('colors').append(swatch(h,true)));
+img.hidden=false;$('results').hidden=false;
+show(top.length?top[0][0]:'#ffffff');
+$('status').textContent='Touche directement la couleur de ton vêtement.';
+}catch(e){$('status').textContent='Analyse impossible.'}
+};
+img.onerror=()=>$('status').textContent='Photo illisible.';
+img.src=url;
+};
+$('preview').onclick=function(e){
+const r=this.getBoundingClientRect();
+const x=Math.max(0,Math.min(canvas.width-1,Math.floor((e.clientX-r.left)/r.width*canvas.width)));
+const y=Math.max(0,Math.min(canvas.height-1,Math.floor((e.clientY-r.top)/r.height*canvas.height)));
+const d=ctx.getImageData(x,y,1,1).data;
+if(d[3]>=128)show(hex([d[0],d[1],d[2]]));
+};
+</script>
+</body>
+</html>ent)show(current)};
 $('piece').onchange=()=>{if(current)show(current)};
 $('photo').onchange=function(){
 if(!this.files[0])return;
