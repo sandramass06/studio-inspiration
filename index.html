@@ -135,6 +135,22 @@ if(d<25)return l<100?'gris foncé':l<175?'gris moyen':'gris clair';
 if(d<55&&r>=g&&r>=b)return 'taupe';
 let hue=max===r?60*((g-b)/d%6):max===g?60*((b-r)/d+2):60*((r-g)/d+4);
 hue=(hue+360)%360;
+  if(d>=25){
+if(hue>=15&&hue<45){
+if(l<75)return 'chocolat';
+if(l<120)return 'marron';
+if(l>=155&&l<200&&d<100)return 'camel';
+if(l>=200&&d<90)return 'sable';
+}
+if(hue>=70&&hue<165){
+if(l<100)return 'vert forêt';
+if(d<65&&l>140)return 'vert sauge';
+if(hue<100&&l<160)return 'kaki';
+}
+if(hue>=165&&hue<210&&l<130)return 'bleu pétrole';
+if(hue>=210&&hue<260&&l<100)return 'bleu marine';
+if(hue>=300&&hue<345&&d<100&&l>140)return 'vieux rose';
+  }
 if(hue<15||hue>=345)return l<90?'bordeaux':l>180?'rose clair':'rouge';
 if(hue<45)return l<110?'marron':l>180?'beige chaud':'terracotta';
 if(hue<70)return 'jaune';
