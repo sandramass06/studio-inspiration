@@ -553,5 +553,35 @@ roles=function(style){
   );
 };
 </script>
+<script>
+const tenueInitiale=roles;
+const choixTenue=[0,0,0];
+roles=function(style){
+  if($('universe').value==='mode' && choixTenue[style]===1){
+    return rolesVariation(style);
+  }
+  return tenueInitiale(style);
+};
+const afficherTenues=show;
+show=function(h){
+  afficherTenues(h);
+  if($('universe').value!=='mode')return;
+  document.querySelectorAll('.harmony').forEach((box,i)=>{
+    if(i>2)return;
+    const ancien=box.querySelector('.autre-tenue');
+    if(ancien)ancien.remove();
+    const bouton=document.createElement('button');
+    bouton.type='button';
+    bouton.className='autre-tenue';
+    bouton.textContent='Voir une autre tenue';
+    bouton.style.cssText='display:block;width:100%;margin-top:16px;padding:14px;border:1px solid #c9b9a5;border-radius:12px;background:#f1e9df;color:#51463b;cursor:pointer;';
+    bouton.onclick=function(){
+      choixTenue[i]=1-choixTenue[i];
+      show(h);
+    };
+    box.appendChild(bouton);
+  });
+};
+</script>
 </body>
 </html>
