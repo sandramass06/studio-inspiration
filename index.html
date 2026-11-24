@@ -377,6 +377,17 @@ if(p==='Chaussures')return [p,top,bottom,bag];
 if(p==='Sac')return [p,top,bottom,shoes];
 return rolesV10(style);
 };
+  ids['Pull']=ids['Haut / Pull'];
+ids['T-shirt / Chemisier']=ids['Chemisier'];
+const rolesV12=roles;
+roles=function(style){
+const p=$('piece').value;
+if($('universe').value!=='mode')return rolesV12(style);
+if(['Pull','Gilet / Cardigan','T-shirt / Chemisier'].includes(p)){
+return [p,['Pantalon / Jean','Jupe','Jean droit'][style],['Sac','Petit sac','Sac souple'][style],['Escarpins','Ballerines','Baskets'][style]];
+}
+return rolesV12(style);
+};
 </script>
 </body>
 </html>
