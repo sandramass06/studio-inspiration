@@ -252,16 +252,27 @@ list[i]=choices.find(valid)||list[i];
 });
   
 if($('universe').value==='mode'){
-  const [r,g,b]=rgb(h);
-  const clair=(r*299+g*587+b*114)/1000>185;
-  const neutre=clair?'#51463b':'#f5f0e5';
-  const chic='#292929';
-  const doux='#d5bfa5';
-  const naturel='#ae967c';
-  palettes[0][1]=[h,neutre,chic,chic];
-  palettes[1][1]=[h,neutre,doux,doux];
-  palettes[2][1]=[h,neutre,naturel,naturel];
-  }
+  const couleur=name(h).toLowerCase();
+  let famille='beige';
+  if(/noir/.test(couleur))famille='noir';
+  else if(/blanc|écru|ivoire/.test(couleur))famille='blanc';
+  else if(/gris/.test(couleur))famille='gris';
+  else if(/kaki|olive/.test(couleur))famille='kaki';
+  else if(/marine/.test(couleur))famille='marine';
+  else if(/terracotta|orange|rouille/.test(couleur))famille='terracotta';
+  else if(/marron|camel|chocolat|brun/.test(couleur))famille='marron';
+  else if(/bordeaux|rouge/.test(couleur))famille='rouge';
+  else if(/rose|lilas|violet/.test(couleur))famille='rose';
+  else if(/vert/.test(couleur))famille='vert';
+  else if(/bleu/.test(couleur))famille='bleu';
+  palettes.forEach((palette,style)=>{
+    const variantes=harmoniesMode[famille][style];
+    const tour=rotationTenues[style]%variantes.length;
+    const [haut,accessoire]=variantes[tour];
+    palette[1]=[h,haut,accessoire,style===2?haut:accessoire];
+  });
+}
+
   const own=document.querySelector('input[name="display"]:checked').value==='photo';
 $('harmonies').replaceChildren();
 palettes.forEach(([title,list],style)=>{
