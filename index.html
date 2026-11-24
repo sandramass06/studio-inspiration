@@ -414,6 +414,42 @@ advice.append(line);
   const centerStyle=document.createElement('style');
 centerStyle.textContent='.visual > div:last-child:nth-child(odd){grid-column:1 / -1;width:50%;justify-self:center;margin:auto;}';
 document.head.appendChild(centerStyle);
+  Object.assign(ids,{
+'Créoles':'38bc8210',
+'Ceinture':'d66c8210',
+'Collier':'c96c8210',
+'Foulard':'d0d08210',
+'Bracelet':'97f08210',
+'Lunettes de soleil':'eb548210'
+});
+const showAccessories=show;
+show=function(h){
+showAccessories(h);
+if($('universe').value!=='mode')return;
+const extras=[
+[['Créoles','#b89a62'],['Ceinture','#795239']],
+[['Collier','#b89a62'],['Foulard','#f5e9e2']],
+[['Bracelet','#b89a62'],['Lunettes de soleil','#604536']]
+];
+document.querySelectorAll('.harmony').forEach((box,s)=>{
+const visual=box.querySelector('.visual');
+const advice=box.querySelector('.advice');
+if(!visual||!advice||!extras[s])return;
+extras[s].forEach(([n,c])=>{
+const item=document.createElement('div');
+const holder=document.createElement('div');
+holder.className='holder';
+const label=document.createElement('div');
+label.textContent=n;
+item.append(holder,label);
+visual.append(item);
+drawPhoto(n,c,holder);
+const line=document.createElement('div');
+line.textContent=n+' : '+name(c);
+advice.append(line);
+});
+});
+};
 </script>
 </body>
 </html>
