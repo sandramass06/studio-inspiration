@@ -279,7 +279,7 @@ palettes.forEach(([title,list],style)=>{
 const box=document.createElement('div');box.className='harmony';
 const head=document.createElement('strong');head.textContent=title;
 const row=document.createElement('div');row.className='palette';
-list.forEach(c=>row.append(swatch(c,false)));
+ [...new Set(list)].forEach(c=>row.append(swatch(c,false)));
 const visual=document.createElement('div');visual.className='visual';
 const advice=document.createElement('div');advice.className='advice';
 roles(style).forEach((n,i)=>{
