@@ -388,6 +388,29 @@ return [p,['Pantalon / Jean','Jupe','Jean droit'][style],['Sac','Petit sac','Sac
 }
 return rolesV12(style);
 };
+  const showCardigan=show;
+show=function(h){
+showCardigan(h);
+if($('universe').value!=='mode'||$('piece').value!=='Gilet / Cardigan')return;
+document.querySelectorAll('.harmony').forEach(box=>{
+const visual=box.querySelector('.visual');
+const advice=box.querySelector('.advice');
+const chip=box.querySelectorAll('.chip')[1];
+if(!visual||!advice||!chip)return;
+const c=hex(chip.style.backgroundColor.match(/\d+/g).slice(0,3).map(Number));
+const item=document.createElement('div');
+const holder=document.createElement('div');
+holder.className='holder';
+const label=document.createElement('div');
+label.textContent='Chemisier';
+item.append(holder,label);
+visual.append(item);
+drawPhoto('Chemisier',c,holder);
+const line=document.createElement('div');
+line.textContent='Chemisier : '+name(c);
+advice.append(line);
+});
+};
 </script>
 </body>
 </html>
