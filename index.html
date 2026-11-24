@@ -617,5 +617,68 @@ show=function(h){
   });
 };
 </script>
+<script>
+async function enregistrerTenue(box,i){
+  const bouton=box.querySelector('.enregistrer-tenue');
+  bouton.disabled=true;
+  bouton.textContent='Enregistrement en cours...';
+  try{
+    if(!window.html2canvas){
+      await new Promise((resolve,reject)=>{
+        const s=document.createElement('script');
+        s.src='https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js';
+        s.onload=resolve;
+        s.onerror=reject;
+        document.head.appendChild(s);
+      });
+    }
+    const canvas=await html2canvas(box,{
+      scale:2,
+      backgroundColor:'#faf7f0',
+      useCORS:true,
+      ignoreElements:el=>el.tagName==='BUTTON'
+    });
+    const image=document.createElement('canvas');
+    image.width=canvas.width;
+    image.height=canvas.height+140;
+    const ctx=image.getContext('2d');
+    ctx.fillStyle='#faf7f0';
+    ctx.fillRect(0,0,image.width,image.height);
+    ctx.fillStyle='#51463b';
+    ctx.font='bold 42px Georgia';
+    ctx.textAlign='center';
+    ctx.fillText('Studio Inspiration',image.width/2,60);
+    ctx.font='26px Georgia';
+    ctx.fillText('Ma tenue personnalisée',image.width/2,105);
+    ctx.drawImage(canvas,0,140);
+    const lien=document.createElement('a');
+    lien.download='Studio-Inspiration-tenue-'+(i+1)+'.png';
+    lien.href=image.toDataURL('image/png');
+    document.body.appendChild(lien);
+    lien.click();
+    lien.remove();
+  }catch(e){
+    alert('Enregistrement impossible. Réessaie.');
+  }finally{
+    bouton.disabled=false;
+    bouton.textContent='Enregistrer ma tenue';
+  }
+}
+const showAvantEnregistrement=show;
+show=function(h){
+  showAvantEnregistrement(h);
+  if($('universe').value!=='mode')return;
+  document.querySelectorAll('.harmony').forEach((box,i)=>{
+    if(box.querySelector('.enregistrer-tenue'))return;
+    const bouton=document.createElement('button');
+    bouton.type='button';
+    bouton.className='enregistrer-tenue';
+    bouton.textContent='Enregistrer ma tenue';
+    bouton.style.cssText='display:block;width:100%;margin-top:10px;padding:14px;border:0;border-radius:12px;background:#756653;color:white;cursor:pointer;';
+    bouton.onclick=()=>enregistrerTenue(box,i);
+    box.appendChild(bouton);
+  });
+};
+</script>
 </body>
 </html>
