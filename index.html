@@ -316,6 +316,22 @@ showV11(h);
 document.querySelectorAll('small').forEach(e=>{
 if(e.textContent==='Version 1.0')e.textContent='Version 1.1';
 });
+  const rolesV10=roles;
+roles=function(style){
+const r=rolesV10(style);
+if($('universe').value!=='mode')return r;
+const p=$('piece').value;
+return r.map((n,i)=>{
+if(i===0)return n;
+if(n==='Haut / Pull')return style===2?'Haut / Pull':'Chemisier';
+if(n==='Veste / Manteau')return style===0?'Blazer':'Trench';
+if(n==='Chaussures')return 'Escarpins';
+if(n==='Baskets'&&p!=='Haut / Pull')return 'Mocassins';
+return n;
+});
+};
+ids['Robe']=ids['Robe midi'];
+ids['Veste / Manteau']=ids['Blazer'];
 </script>
 </body>
 </html>
