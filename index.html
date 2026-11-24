@@ -469,6 +469,13 @@ const visual=box.querySelector('.visual');
 const advice=box.querySelector('.advice');
 if(!visual||!advice||!extras[s])return;
 extras[s].forEach(([n,c])=>{
+if(n==='Ceinture'){
+const sac=Array.from(advice.children).find(e=>/^(Ton élément — )?Sac/i.test(e.textContent));
+const chips=Array.from(box.querySelectorAll('.chip'));
+const couleur=sac?.textContent.split(' : ').pop().trim();
+const chip=chips.find(e=>name(hex(e.style.backgroundColor.match(/\d+/g).slice(0,3).map(Number)))===couleur);
+if(chip)c=hex(chip.style.backgroundColor.match(/\d+/g).slice(0,3).map(Number));
+  }
 const item=document.createElement('div');
 const holder=document.createElement('div');
 holder.className='holder';
