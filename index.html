@@ -251,7 +251,18 @@ list[i]=choices.find(valid)||list[i];
 }
 });
   
-const own=document.querySelector('input[name="display"]:checked').value==='photo';
+if($('universe').value==='mode'){
+  const [r,g,b]=rgb(h);
+  const clair=(r*299+g*587+b*114)/1000>185;
+  const neutre=clair?'#51463b':'#f5f0e5';
+  const chic='#292929';
+  const doux='#d5bfa5';
+  const naturel='#ae967c';
+  palettes[0][1]=[h,neutre,chic,chic];
+  palettes[1][1]=[h,neutre,doux,doux];
+  palettes[2][1]=[h,neutre,naturel,naturel];
+  }
+  const own=document.querySelector('input[name="display"]:checked').value==='photo';
 $('harmonies').replaceChildren();
 palettes.forEach(([title,list],style)=>{
 const box=document.createElement('div');box.className='harmony';
