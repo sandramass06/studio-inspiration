@@ -583,5 +583,39 @@ show=function(h){
   });
 };
 </script>
+<script>
+const rotationTenues=[0,0,0];
+const rolesAvantRotation=roles;
+const famillesMode=[
+  ['Chemisier','Blazer','T-shirt','Debardeur','Haut / Pull','Pull','Gilet / Cardigan','Veste','Trench'],
+  ['Pantalon / Jean','Jean droit','Pantalon habillé','Jupe','Jupe midi'],
+  ['Escarpins','Mocassins','Ballerines','Bottines','Baskets','Chaussures'],
+  ['Sac','Petit sac','Sac souple','Sac bandoulière','Sac cabas souple','Sac à main structuré','Sac à main compact']
+];
+roles=function(style){
+  const articles=rolesAvantRotation(style);
+  const tour=rotationTenues[style]||0;
+  if($('universe').value!=='mode'||tour===0)return articles;
+  return articles.map((article,i)=>{
+    if(i===0||article===$('piece').value)return article;
+    const famille=famillesMode.find(f=>f.includes(article));
+    if(!famille)return article;
+    const choix=famille.filter(n=>ids[n]&&n!==$('piece').value);
+    if(choix.length<2)return article;
+    return choix[(Math.max(0,choix.indexOf(article))+tour)%choix.length];
+  });
+};
+const showRotation=show;
+show=function(h){
+  showRotation(h);
+  if($('universe').value!=='mode')return;
+  document.querySelectorAll('.autre-tenue').forEach((bouton,i)=>{
+    bouton.onclick=function(){
+      rotationTenues[i]++;
+      show(h);
+    };
+  });
+};
+</script>
 </body>
 </html>
