@@ -7,31 +7,31 @@
 <style>
 *{box-sizing:border-box}
 body{margin:0;padding:14px;background:#f2ece5;color:#49382e;font-family:Arial,sans-serif}
-main{max-width:600px;margin:auto;background:white;border-radius:20px;padding:20px}
-h1{text-align:center;font-family:Georgia,serif;font-size:30px}
+main{max-width:600px;margin:auto;background:white;border-radius:20px;padding:18px}
+h1{text-align:center;font-family:Georgia,serif}
 h2{font-size:20px}
 select{width:100%;padding:13px;margin:10px 0 18px;border:1px solid #d5c8bb;border-radius:10px;background:#faf7f2;font-size:16px;color:inherit}
 input{max-width:100%;margin:12px 0}
-#preview{display:block;max-width:100%;max-height:400px;margin:auto;border-radius:12px}
+#preview{display:block;max-width:100%;max-height:360px;margin:auto;border-radius:12px}
 [hidden]{display:none!important}
 .palette{display:flex;gap:6px;margin:15px 0}
 .swatch{flex:1;min-width:0;text-align:center;font-size:11px;overflow-wrap:anywhere;cursor:pointer}
-.chip{height:50px;border-radius:8px;border:1px solid #ddd}
-.harmony{padding:14px;border:1px solid #e6ded5;border-radius:14px;margin:16px 0}
-.advice{background:#f8f4ef;padding:12px;border-radius:10px;margin:12px 0;line-height:1.7;font-size:14px}
-.visual{display:grid;grid-template-columns:1fr 1fr;gap:12px;background:#faf8f5;padding:12px;border-radius:12px;text-align:center;font-size:12px}
-.item{min-width:0;padding:5px}
-.item canvas{display:block;width:100%;height:170px;object-fit:contain;margin-bottom:8px}
-small{color:#75675e}
+.chip{height:48px;border-radius:8px;border:1px solid #ddd}
+.harmony{padding:12px;border:1px solid #e6ded5;border-radius:14px;margin:16px 0}
+.advice,.choice{background:#f5eee6;padding:12px;border-radius:10px;margin:12px 0;line-height:1.6;font-size:14px}
+.visual{display:grid;grid-template-columns:1fr 1fr;gap:8px;background:#faf8f5;padding:8px;border-radius:12px;text-align:center;font-size:12px}
+.holder{height:145px;display:flex;align-items:center;justify-content:center;margin-bottom:5px}
+.holder canvas,.holder img{max-width:100%;max-height:100%;object-fit:contain}
 .selected{display:flex;align-items:center;gap:12px;padding:12px;background:#f5eee6;border-radius:12px}
 .sample{width:65px;height:65px;border-radius:10px;border:1px solid #ddd}
-.notice{font-size:13px;color:#75675e}
+small{color:#75675e}
+.choice label{display:block}
 </style>
 </head>
 <body>
 <main>
 <h1>Studio Inspiration</h1>
-<p>Compose tes harmonies et découvre de nouvelles associations.</p>
+<p>Imagine de nouvelles associations à partir de ce que tu possèdes.</p>
 <strong>Choisis ton univers</strong>
 <select id="universe">
 <option value="mode">Mode et vêtements</option>
@@ -43,17 +43,24 @@ small{color:#75675e}
 <select id="piece"></select>
 <h2>Importe ta photo</h2>
 <input type="file" id="photo" accept="image/*">
-<img id="preview" alt="Photo importée" hidden>
+<img id="preview" hidden>
 <p id="status">Choisis une photo.</p>
 <section id="results" hidden>
 <h2>Couleurs principales</h2>
 <div id="colors" class="palette"></div>
 <h2>Ta couleur sélectionnée</h2>
 <div id="selected" class="selected"></div>
+<div class="choice">
+<strong>Personnalise tes inspirations</strong>
+<label><input type="radio" name="display" value="photo" checked> Utiliser ma propre photo</label>
+<label><input type="radio" name="display" value="model"> Utiliser le modèle photoréaliste</label>
+<small>Ta photo conserve son arrière-plan et ses couleurs.</small>
+</div>
 <h2>Harmonies et inspirations</h2>
 <div id="harmonies"></div>
 </section>
-<small>Ta photo reste sur ton appareil. Les vêtements proposés sont des modèles d'inspiration générés par IA.</small>
+<small>Ta photo reste sur ton appareil. Modèles générés par IA. Couleurs approximatives.</small>
+<p><small>Version 0.8</small></p>
 </main>
 <script>
 const $=id=>document.getElementById(id);
@@ -64,47 +71,47 @@ bijoux:['Collier','Bracelet','Bague','Boucles d’oreilles','Montre'],
 beaute:['Rouge à lèvres','Fard à paupières','Blush','Vernis']
 };
 const ids={
-'Haut / Pull':'00000000d6bc8210af2e6f7929f20ea7',
-'Sac':'0000000063488210b3e7e30044049efd',
-'Chaussures':'00000000c3948210abe5c7fac8bd3818',
-'Pantalon / Jean':'0000000098e48210b53b6381167e9988'
+'Haut / Pull':'00000000d6bc8210af2e6f7929f20',
+'Sac':'0000000063488210b3e7e3004404',
+'Chaussures':'00000000c3948210abe5c7fac8bd',
+'Pantalon / Jean':'0000000098e48210b53b6381167e'
 };
 const cache={};
 let filesPromise;
 function getFiles(){
-if(!filesPromise)filesPromise=fetch('https://api.github.com/repos/sandramass06/studio-inspiration/contents/').then(r=>{
-if(!r.ok)throw Error('Liste indisponible');
-return r.json();
-}).catch(()=>[]);
+if(!filesPromise)filesPromise=fetch('https://api.github.com/repos/sandramass06/studio-inspiration/contents/').then(r=>{if(!r.ok)throw Error();return r.json()}).catch(()=>{filesPromise=null;return []});
 return filesPromise;
 }
 function loadAsset(n){
 if(cache[n])return cache[n];
 cache[n]=(async()=>{
-const id=ids[n];
-if(!id)throw Error('Modèle indisponible');
 const files=await getFiles();
-const found=Array.isArray(files)?files.find(f=>f.name.includes(id)):null;
-const candidates=found?[encodeURIComponent(found.name)]:['fichier_'+id+'.png','file_'+id+'.png','fichier_'+id+'.jpg','file_'+id+'.jpg','fichier_'+id+'.webp','file_'+id+'.webp'];
-for(const src of candidates){
-try{
-const img=await new Promise((resolve,reject)=>{
-const im=new Image();
-im.onload=()=>resolve(im);
-im.onerror=reject;
-im.src=src;
+const found=files.find(f=>f.name.includes(ids[n]));
+if(!found)throw Error();
+const img=await new Promise((ok,no)=>{
+const im=new Image();im.onload=()=>ok(im);im.onerror=no;im.src=encodeURIComponent(found.name);
 });
 const c=document.createElement('canvas');
-const s=Math.min(1,600/Math.max(img.width,img.height));
+const s=Math.min(1,650/Math.max(img.width,img.height));
 c.width=Math.max(1,Math.round(img.width*s));
 c.height=Math.max(1,Math.round(img.height*s));
-const x=c.getContext('2d',{willReadFrequently:true});
+const x=c.getContext('2d');
 x.drawImage(img,0,0,c.width,c.height);
-return x.getImageData(0,0,c.width,c.height);
-}catch(e){}
-}
-throw Error('Image introuvable');
+const d=x.getImageData(0,0,c.width,c.height);
+let l=c.width,r=0,t=c.height,b=0,sum=0,count=0;
+for(let y=0;y<c.height;y++)for(let z=0;z<c.width;z++){
+const i=(y*c.width+z)*4;
+const R=d.data[i],G=d.data[i+1],B=d.data[i+2];
+if(d.data[i+3]>100&&Math.min(R,G,B)<242){
+l=Math.min(l,z);r=Math.max(r,z);t=Math.min(t,y);b=Math.max(b,y);
+sum+=.2126*R+.7152*G+.0722*B;count++;
+}}
+if(!count)return {data:d,mean:160};
+l=Math.max(0,l-3);t=Math.max(0,t-3);
+r=Math.min(c.width-1,r+3);b=Math.min(c.height-1,b+3);
+return {data:x.getImageData(l,t,r-l+1,b-t+1),mean:sum/count};
 })();
+cache[n].catch(()=>delete cache[n]);
 return cache[n];
 }
 function hex(a){return '#'+a.map(v=>Math.max(0,Math.min(255,Math.round(v))).toString(16).padStart(2,'0')).join('')}
@@ -112,66 +119,55 @@ function rgb(h){return [1,3,5].map(i=>parseInt(h.slice(i,i+2),16))}
 function mix(a,b,t){return hex(rgb(a).map((v,i)=>v*(1-t)+rgb(b)[i]*t))}
 function name(h){
 const names={'#f5f0e5':'écru','#b89a62':'doré','#252525':'noir','#d8a6b2':'rose poudré','#f5e9e2':'beige rosé','#bdb6ae':'gris taupe','#a5b39a':'vert sauge','#d5bfa5':'beige naturel','#faf7f0':'blanc cassé'};
-if(names[h.toLowerCase()])return names[h.toLowerCase()];
+if(names[h])return names[h];
 const [r,g,b]=rgb(h),max=Math.max(r,g,b),min=Math.min(r,g,b),d=max-min,l=(max+min)/2;
 if(max<45)return 'noir';
-if(min>230)return 'blanc';
+if(min>235)return 'blanc';
 if(d<25)return l<100?'gris foncé':l<175?'gris moyen':'gris clair';
-if(d<55&&r>=g&&r>=b)return l<145?'taupe foncé':'taupe clair';
+if(d<55&&r>=g&&r>=b)return 'taupe';
 let hue=max===r?60*((g-b)/d%6):max===g?60*((b-r)/d+2):60*((r-g)/d+4);
 hue=(hue+360)%360;
 if(hue<15||hue>=345)return l<90?'bordeaux':l>180?'rose clair':'rouge';
 if(hue<45)return l<110?'marron':l>180?'beige chaud':'terracotta';
-if(hue<70)return 'ocre ou jaune';
-if(hue<165)return l<100?'vert foncé':'vert';
+if(hue<70)return 'jaune';
+if(hue<165)return 'vert';
 if(hue<200)return 'turquoise';
-if(hue<260)return l<100?'bleu marine':'bleu';
+if(hue<260)return 'bleu';
 if(hue<300)return 'violet';
 return 'rose';
 }
 async function drawPhoto(n,h,holder){
-const c=document.createElement('canvas');
-const msg=document.createElement('div');
-msg.className='notice';
-if(!ids[n]){
-msg.textContent='Modèle photo à venir';
-const chip=document.createElement('div');
-chip.className='chip';
-chip.style.background=h;
-holder.append(chip,msg);
-return;
-}
-msg.textContent='Chargement...';
+const msg=document.createElement('small');
 holder.append(msg);
+if(!ids[n]){msg.textContent='Modèle photo à venir';return}
+msg.textContent='Chargement...';
 try{
-const src=await loadAsset(n);
+const a=await loadAsset(n),src=a.data;
+const c=document.createElement('canvas');
 c.width=src.width;c.height=src.height;
-const target=rgb(h);
-const data=new ImageData(new Uint8ClampedArray(src.data),src.width,src.height);
-for(let i=0;i<data.data.length;i+=4){
+const target=rgb(h),light=.2126*target[0]+.7152*target[1]+.0722*target[2];
+const d=new ImageData(new Uint8ClampedArray(src.data),src.width,src.height);
+for(let i=0;i<d.data.length;i+=4){
+if(!src.data[i+3])continue;
 const r=src.data[i],g=src.data[i+1],b=src.data[i+2];
-const lum=.2126*r+.7152*g+.0722*b;
-const min=Math.min(r,g,b),max=Math.max(r,g,b);
-let mask=Math.max(0,Math.min(1,(248-min)/30));
-if(n==='Sac'&&max-min>25&&r>b+15)mask*=.12;
+const delta=.2126*r+.7152*g+.0722*b-a.mean;
+let mask=Math.max(0,Math.min(1,(253-Math.min(r,g,b))/20));
+if(n==='Sac'&&Math.max(r,g,b)-Math.min(r,g,b)>25&&r>b+15)mask*=.15;
 for(let j=0;j<3;j++){
-let v=lum<160?target[j]*lum/160:target[j]+(255-target[j])*(lum-160)/95;
-data.data[i+j]=src.data[i+j]*(1-mask)+v*mask;
-}
-}
-c.getContext('2d').putImageData(data,0,0);
+const center=target[j]*(light>220?.94:1);
+const v=Math.max(0,Math.min(255,center+delta*(delta<0?(light<65?.35:.78):(light<65?.5:.4))));
+d.data[i+j]=src.data[i+j]*(1-mask)+v*mask;
+}}
+c.getContext('2d').putImageData(d,0,0);
 msg.replaceWith(c);
-}catch(e){
-msg.textContent='Image indisponible';
-}
+}catch(e){msg.textContent='Image indisponible'}
 }
 function pieces(){
 $('piece').replaceChildren();
 items[$('universe').value].forEach(n=>$('piece').add(new Option(n,n)));
 }
 pieces();
-const canvas=document.createElement('canvas');
-const ctx=canvas.getContext('2d',{willReadFrequently:true});
+const canvas=document.createElement('canvas'),ctx=canvas.getContext('2d',{willReadFrequently:true});
 let current=null,url;
 function swatch(h,click){
 const e=document.createElement('div');
@@ -182,11 +178,9 @@ return e;
 }
 function roles(){
 const p=$('piece').value,u=$('universe').value;
-let rest;
-if(u==='mode')rest=p==='Robe'?['Veste / Manteau','Sac','Chaussures']:p==='Jupe'?['Haut / Pull','Sac','Chaussures']:['Haut / Pull','Pantalon / Jean','Sac','Chaussures'];
-if(u==='deco')rest=['Canapé','Mur','Coussins','Tapis'];
-if(u==='bijoux')rest=['Collier','Bracelet','Bague','Boucles d’oreilles'];
-if(u==='beaute')rest=items.beaute;
+let rest=u==='mode'?['Haut / Pull','Pantalon / Jean','Sac','Chaussures']:u==='deco'?['Canapé','Mur','Coussins','Tapis']:u==='bijoux'?items.bijoux:items.beaute;
+if(p==='Robe')rest=['Veste / Manteau','Sac','Chaussures'];
+if(p==='Jupe')rest=['Haut / Pull','Sac','Chaussures'];
 return [p,...rest.filter(n=>n!==p).slice(0,3)];
 }
 function show(h){
@@ -199,66 +193,55 @@ const palettes=[
 ['Doux et féminin',[h,neutral?'#d8a6b2':mix(h,'#ffffff',.65),'#f5e9e2','#bdb6ae']],
 ['Naturel et moderne',[h,neutral?'#a5b39a':mix(opposite,'#b5b09a',.65),'#d5bfa5','#faf7f0']]
 ];
+const own=document.querySelector('input[name="display"]:checked').value==='photo';
 $('harmonies').replaceChildren();
 palettes.forEach(([title,list])=>{
-const box=document.createElement('div');
-box.className='harmony';
-const head=document.createElement('strong');
-head.textContent=title;
-const row=document.createElement('div');
-row.className='palette';
+const box=document.createElement('div');box.className='harmony';
+const head=document.createElement('strong');head.textContent=title;
+const row=document.createElement('div');row.className='palette';
 list.forEach(c=>row.append(swatch(c,false)));
-const visual=document.createElement('div');
-visual.className='visual';
-const advice=document.createElement('div');
-advice.className='advice';
+const visual=document.createElement('div');visual.className='visual';
+const advice=document.createElement('div');advice.className='advice';
 roles().forEach((n,i)=>{
 const item=document.createElement('div');
-item.className='item';
-const holder=document.createElement('div');
-const label=document.createElement('div');
-label.textContent=n;
-item.append(holder,label);
-visual.append(item);
-drawPhoto(n,list[i],holder);
-const line=document.createElement('div');
-line.textContent=(i===0?'Ton élément — ':'')+n+' : '+name(list[i]);
-advice.append(line);
+const holder=document.createElement('div');holder.className='holder';
+const label=document.createElement('div');label.textContent=n;
+item.append(holder,label);visual.append(item);
+if(i===0&&own&&url){
+const img=document.createElement('img');img.src=url;holder.append(img);
+const tag=document.createElement('small');tag.textContent='Ta photo';item.append(tag);
+}else drawPhoto(n,list[i],holder);
+const line=document.createElement('div');line.textContent=(i===0?'Ton élément — ':'')+n+' : '+name(list[i]);advice.append(line);
 });
-box.append(head,row,visual,advice);
-$('harmonies').append(box);
+box.append(head,row,visual,advice);$('harmonies').append(box);
 });
 }
+document.querySelectorAll('input[name="display"]').forEach(r=>r.onchange=()=>{if(current)show(current)});
 $('universe').onchange=()=>{pieces();if(current)show(current)};
 $('piece').onchange=()=>{if(current)show(current)};
 $('photo').onchange=function(){
 if(!this.files[0])return;
-current=null;
-$('results').hidden=true;
-$('preview').hidden=true;
+current=null;$('results').hidden=true;$('preview').hidden=true;
 $('status').textContent='Analyse en cours...';
 if(url)URL.revokeObjectURL(url);
 url=URL.createObjectURL(this.files[0]);
 const img=$('preview');
 img.onload=()=>{
 try{
-const scale=Math.min(1,800/Math.max(img.naturalWidth,img.naturalHeight));
-canvas.width=Math.max(1,Math.round(img.naturalWidth*scale));
-canvas.height=Math.max(1,Math.round(img.naturalHeight*scale));
+const s=Math.min(1,800/Math.max(img.naturalWidth,img.naturalHeight));
+canvas.width=Math.max(1,Math.round(img.naturalWidth*s));canvas.height=Math.max(1,Math.round(img.naturalHeight*s));
 ctx.drawImage(img,0,0,canvas.width,canvas.height);
-const data=ctx.getImageData(0,0,canvas.width,canvas.height).data,counts={};
-for(let i=0;i<data.length;i+=16){
-if(data[i+3]<128)continue;
-const h=hex([data[i],data[i+1],data[i+2]].map(v=>Math.round(v/32)*32));
+const d=ctx.getImageData(0,0,canvas.width,canvas.height).data,counts={};
+for(let i=0;i<d.length;i+=16){
+if(d[i+3]<128)continue;
+const h=hex([d[i],d[i+1],d[i+2]].map(v=>Math.round(v/32)*32));
 counts[h]=(counts[h]||0)+1;
 }
 const top=Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,5);
-$('colors').replaceChildren();
-top.forEach(([h])=>$('colors').append(swatch(h,true)));
-img.hidden=false;
-$('results').hidden=false;
+$('colors').replaceChildren();top.forEach(([h])=>$('colors').append(swatch(h,true)));
+img.hidden=false;$('results').hidden=false;
 show(top.length?top[0][0]:'#808080');
-$('status').textContent='Touche une couleur directement sur ta photo.';
+$('status').textContent='Touche directement la couleur de ton vêtement.';
 }catch(e){$('status').textContent='Analyse impossible.'}
 };
 img.onerror=()=>$('status').textContent='Photo illisible.';
@@ -269,7 +252,7 @@ const r=this.getBoundingClientRect();
 const x=Math.max(0,Math.min(canvas.width-1,Math.floor((e.clientX-r.left)/r.width*canvas.width)));
 const y=Math.max(0,Math.min(canvas.height-1,Math.floor((e.clientY-r.top)/r.height*canvas.height)));
 const d=ctx.getImageData(x,y,1,1).data;
-show(hex([d[0],d[1],d[2]]));
+if(d[3]>=128)show(hex([d[0],d[1],d[2]]));
 };
 </script>
 </body>
