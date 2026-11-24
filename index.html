@@ -301,6 +301,21 @@ if(lines[i])lines[i].textContent=lines[i].textContent.replace(old,modelNames[old
 document.querySelectorAll('small').forEach(e=>{
 if(e.textContent==='Version 0.9')e.textContent='Version 1.0';
 });
+  Object.assign(ids,{
+'Chemisier':'16bc8210',
+'Blazer':'7dc08210',
+'Trench':'0cc88210',
+'Escarpins':'8d708210',
+'Mocassins':'77408210',
+'Robe midi':'91848210'
+});
+const showV11=show;
+show=function(h){
+showV11(h);
+};
+document.querySelectorAll('small').forEach(e=>{
+if(e.textContent==='Version 1.0')e.textContent='Version 1.1';
+});
 </script>
 </body>
 </html>
