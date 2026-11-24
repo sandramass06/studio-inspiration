@@ -480,6 +480,34 @@ el.style.objectFit='contain';
 });
 });
 };
+  const oldColorName=name;
+name=function(h){
+const original=oldColorName(h);
+const s=String(h).replace('#','');
+if(!/^[0-9a-f]{6}$/i.test(s))return original;
+const r=parseInt(s.slice(0,2),16)/255;
+const g=parseInt(s.slice(2,4),16)/255;
+const b=parseInt(s.slice(4,6),16)/255;
+const max=Math.max(r,g,b);
+const min=Math.min(r,g,b);
+const d=max-min;
+const l=(max+min)/2;
+if(!d)return original;
+const sat=d/(1-Math.abs(2*l-1));
+let hue=max===r?(g-b)/d:max===g?2+(b-r)/d:4+(r-g)/d;
+hue=(hue*60+360)%360;
+if(sat<0.12||l<0.09||l>0.94)return original;
+if(hue>=45&&hue<=85&&l<0.48)return 'vert kaki';
+if(hue>85&&hue<=110&&l<0.48&&sat<0.55)return 'vert olive';
+if(hue>=75&&hue<=155&&l>0.48&&sat<0.35)return 'vert sauge';
+if(hue>=165&&hue<=200&&l<0.45)return 'bleu pétrole';
+if(hue>=210&&hue<=250&&l<0.28)return 'bleu marine';
+if((hue>=335||hue<12)&&l<0.38)return 'bordeaux';
+if(hue>=12&&hue<28&&l>0.35&&l<0.65&&sat>0.30)return 'terracotta';
+if(hue>=28&&hue<45&&l>0.35&&l<0.65&&sat>0.30)return 'camel';
+return original;
+};
+   
 </script>
 </body>
 </html>
