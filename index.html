@@ -273,6 +273,34 @@ const y=Math.max(0,Math.min(canvas.height-1,Math.floor((e.clientY-r.top)/r.heigh
 const d=ctx.getImageData(x,y,1,1).data;
 if(d[3]>=128)show(hex([d[0],d[1],d[2]]));
 };
+  const modelNames={
+'Pantalon / Jean':'Pantalon habillé',
+'Chaussures':'Bottines',
+'Sac':'Sac à main structuré',
+'Jupe':'Jupe midi',
+'Petit sac':'Sac à main compact',
+'Sac souple':'Sac cabas souple'
+};
+const previousShow=show;
+show=function(h){
+previousShow(h);
+if($('universe').value!=='mode')return;
+document.querySelectorAll('.harmony').forEach(box=>{
+const labels=box.querySelectorAll('.visual>div>div:nth-child(2)');
+const lines=box.querySelectorAll('.advice>div');
+labels.forEach((label,i)=>{
+if(i===0&&document.querySelector('input[name="display"]:checked').value==='photo')return;
+const old=label.textContent;
+if(modelNames[old]){
+label.textContent=modelNames[old];
+if(lines[i])lines[i].textContent=lines[i].textContent.replace(old,modelNames[old]);
+}
+});
+});
+};
+document.querySelectorAll('small').forEach(e=>{
+if(e.textContent==='Version 0.9')e.textContent='Version 1.0';
+});
 </script>
 </body>
 </html>
