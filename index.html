@@ -450,6 +450,36 @@ advice.append(line);
 });
 });
 };
+  const showLayout=show;
+show=function(h){
+showLayout(h);
+if($('universe').value!=='mode')return;
+document.querySelectorAll('.visual').forEach(v=>{
+const items=Array.from(v.children);
+const label=e=>e.lastElementChild?.textContent.trim();
+if($('piece').value==='Gilet / Cardigan'){
+const shirt=items.find(e=>label(e)==='Chemisier');
+if(shirt)v.insertBefore(shirt,v.children[1]);
+}
+const accessories=['Créoles','Ceinture','Collier','Foulard','Bracelet','Lunettes de soleil'];
+items.forEach(e=>{
+if(accessories.includes(label(e))){
+const holder=e.firstElementChild;
+holder.style.height='115px';
+holder.style.minHeight='0';
+holder.style.overflow='hidden';
+holder.style.display='flex';
+holder.style.alignItems='center';
+holder.style.justifyContent='center';
+holder.querySelectorAll('canvas,img').forEach(el=>{
+el.style.maxHeight='110px';
+el.style.maxWidth='100%';
+el.style.objectFit='contain';
+});
+}
+});
+});
+};
 </script>
 </body>
 </html>
