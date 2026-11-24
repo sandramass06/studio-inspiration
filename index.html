@@ -240,6 +240,17 @@ list[i]=alternatives.find(a=>list.slice(0,i).every(c=>distance(c,a)>=55))||list[
 }
 }
 });
+  palettes.forEach(([title,list])=>{
+const choices=['#d5bfa5','#526b65','#d8a6b2','#243b53','#a5b39a','#722f37','#f5f0e5','#795239','#b89a62','#252525'];
+for(let i=1;i<list.length;i++){
+const used=list.slice(0,i);
+const valid=c=>used.every(a=>name(a)!==name(c)&&Math.hypot(...rgb(a).map((v,j)=>v-rgb(c)[j]))>=45);
+if(!valid(list[i])){
+list[i]=choices.find(valid)||list[i];
+}
+}
+});
+  
 const own=document.querySelector('input[name="display"]:checked').value==='photo';
 $('harmonies').replaceChildren();
 palettes.forEach(([title,list],style)=>{
