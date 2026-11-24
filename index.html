@@ -536,5 +536,22 @@ Object.assign(ids,{
   'Veste':'Veste.png'
 });
 </script>
+<script>
+const rolesVariation=roles;
+roles=function(style){
+  const articles=rolesVariation(style);
+  if($('universe').value!=='mode')return articles;
+  const variations=[
+    {'Blazer':'Veste','Escarpins':'Mocassins'},
+    {'Chemisier':'Debardeur','Ballerines':'Bottines'},
+    {'Haut / Pull':'T-shirt','Chemisier':'T-shirt','Sac souple':'Sac bandoulière','Sac':'Sac bandoulière'}
+  ];
+  const choix=variations[style]||{};
+  return articles.map((article,i)=>
+    i===0||article===$('piece').value
+    ?article:(choix[article]||article)
+  );
+};
+</script>
 </body>
 </html>
