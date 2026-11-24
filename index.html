@@ -507,7 +507,13 @@ if(hue>=12&&hue<28&&l>0.35&&l<0.65&&sat>0.30)return 'terracotta';
 if(hue>=28&&hue<45&&l>0.35&&l<0.65&&sat>0.30)return 'camel';
 return original;
 };
-   
+  const refinedColorName=name;
+name=function(h){
+const c=String(h).toLowerCase();
+if(c==='#b89a62')return 'doré';
+if(c==='#d5bfa5')return 'beige sable';
+return refinedColorName(h);
+}; 
 </script>
 </body>
 </html>
