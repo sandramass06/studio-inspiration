@@ -777,7 +777,10 @@ const harmoniesMode={
 const nomCouleurFinal=name;
 name=function(h){
 if(String(h).toLowerCase()==='#986a45')return 'camel';
-return nomCouleurFinal(h);
+if(String(h).toLowerCase()==='#79543b')return 'marron';
+const [r,g,b]=rgb(h);
+if(r>=190 && g>=160 && b>=125 && r-g>=15 && r-g<=45 && g-b>=10 && g-b<=45)return 'beige clair';
+  return nomCouleurFinal(h);
 };
 </script>
 </body>
