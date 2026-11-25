@@ -665,6 +665,15 @@ async function enregistrerTenue(box,i){
       scale:2,
       backgroundColor:'#faf7f0',
       useCORS:true,
+      onclone:doc=>{
+  doc.querySelectorAll('.holder img,.holder canvas').forEach(el=>{
+    el.style.width='auto';
+    el.style.height='auto';
+    el.style.maxWidth='100%';
+    el.style.maxHeight='100%';
+    el.style.objectFit='contain';
+  });
+},
       ignoreElements:el=>el.tagName==='BUTTON'
     });
     const image=document.createElement('canvas');
