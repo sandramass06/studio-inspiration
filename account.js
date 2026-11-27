@@ -70,3 +70,5 @@ async function start(){
 }
 window.addEventListener('storage',e=>{if(e.key===key&&!busy){validate().then(u=>{user=u;return u?access():guest();}).catch(failure);}});
 start().catch(failure);
+
+window.studioAnalyze=async(h,universe,rotationTenues)=>{const u=await validate();if(!u)throw Error('auth');return api('/functions/v1/studio-analysis',{method:'POST',body:{h,universe,rotationTenues},token:session.access_token});};
