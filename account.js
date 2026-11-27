@@ -25,6 +25,7 @@ async function start(){
  const accessToken=param('access_token'),refreshToken=param('refresh_token'),code=param('code');
  const returning=!!(callbackError||accessToken||refreshToken||code||query.has('auth_return'));
  let notice='';
+ const bounded=(promise,ms=12000)=>{let timer;return Promise.race([promise,new Promise((_,reject)=>{timer=setTimeout(()=>reject(new Error('timeout')),ms);})]).finally(()=>clearTimeout(timer));};
  diag('D6 — Initialisation de Supabase');
  const client=createClient(config.url,config.anonKey,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:false,flowType:'implicit'}});
  function authMessage(error){
@@ -38,8 +39,8 @@ async function start(){
  if(returning){
  try{
  if(callbackError)notice=authMessage(callbackError);
- else if(accessToken&&refreshToken){diag('D8 — Validation de la session');const {error}=await client.auth.setSession({access_token:accessToken,refresh_token:refreshToken});if(error)notice=authMessage(error);}
- else if(code){diag('D8 — Échange du code de connexion');const {error}=await client.auth.exchangeCodeForSession(code);if(error)notice=authMessage(error);}
+ else if(accessToken&&refreshToken){diag('D8 — Validation de la session');const {error}=await bounded(client.auth.setSession({access_token:accessToken,refresh_token:refreshToken}));if(error)notice=authMessage(error);}
+ else if(code){diag('D8 — Échange du code de connexion');const {error}=await bounded(client.auth.exchangeCodeForSession(code));if(error)notice=authMessage(error);}
  else notice='Aucune information de connexion reçue. Demandez un nouveau lien.';
  }catch{notice='Impossible de récupérer la session. Réessayez avec un nouveau lien.';}
  for(const k of ['access_token','refresh_token','provider_token','provider_refresh_token','expires_in','expires_at','token_type','type','code','error','error_code','error_description','auth_return'])url.searchParams.delete(k);
@@ -48,7 +49,7 @@ async function start(){
  async function refresh(session){
  const n=++generation;form.hidden=!!session;logout.hidden=!session;buy.hidden=true;enter.hidden=true;atelier.hidden=true;el('account-email-label').textContent=session?.user?.email||'';
  say(session?'Vérification de tes accès…':(notice||'Connecte-toi pour retrouver tes achats.'));
- try{const access=await getAccess(client,session);if(n!==generation)return;
+ try{const access=await bounded(getAccess(client,session));if(n!==generation)return;
  if(access==='paid'){say('Accès complet retrouvé. Aucun nouvel achat nécessaire.');enter.hidden=false;atelier.hidden=false;}
  if(access==='unpaid'){say('Aucun achat actif retrouvé.');buy.hidden=false;buy.disabled=true;buy.textContent='Achat bientôt disponible';}
  }catch{if(n===generation)say('Impossible de vérifier tes accès. Réessaie plus tard.');}
@@ -59,7 +60,8 @@ async function start(){
  logout.onclick=async()=>{try{const {error}=await client.auth.signOut({scope:'local'});if(error)throw error;await refresh(null);}catch{say('Déconnexion impossible.');}};
  buy.onclick=async()=>{buy.disabled=true;try{const {data,error}=await client.functions.invoke('checkout');if(error)throw error;location.assign(checkoutUrl(data.url));}catch{say('Paiement indisponible. Réessaie après vérification de tes accès.');}finally{buy.disabled=false;}};
  diag('D9 — Lecture de la session');
- const {data,error}=await client.auth.getSession();if(error){notice=authMessage(error);await refresh(null);}else await refresh(data.session);diag(error?'D10 — Erreur de lecture de session':data.session?'D10 — Session présente':'D10 — Session absente'+(notice?' : '+notice:''));if(returning)el('compte').scrollIntoView();
+ const {data,error}=await bounded(client.auth.getSession());
+ diag(data?.session?'D9b — Session trouvée, contrôle des accès':'D9b — Lecture terminée, aucune session');if(error){notice=authMessage(error);await refresh(null);}else await refresh(data.session);diag(error?'D10 — Erreur de lecture de session':data.session?'D10 — Session présente':'D10 — Session absente'+(notice?' : '+notice:''));if(returning)el('compte').scrollIntoView();
 }
 await start();
 }
