@@ -27,7 +27,17 @@ async function start(){
  let notice='';
  const bounded=(promise,ms=12000)=>{let timer;return Promise.race([promise,new Promise((_,reject)=>{timer=setTimeout(()=>reject(new Error('timeout')),ms);})]).finally(()=>clearTimeout(timer));};
  diag('D6 — Initialisation de Supabase');
- const client=createClient(config.url,config.anonKey,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:false,flowType:'implicit'}});
+ // Preserve cross-tab exclusion; bound lock acquisition without stealing an active lock.
+ const lock=async(name,timeout,fn)=>{
+   if(!navigator.locks)throw new Error('session_lock_unavailable');
+   if(timeout===0)return navigator.locks.request(name,{mode:'exclusive',ifAvailable:true},async held=>{if(!held){const e=new Error('session_lock_busy');e.isAcquireTimeout=true;throw e;}return fn();});
+   const controller=new AbortController();
+   const timer=setTimeout(()=>controller.abort(),timeout>0?Math.min(timeout,6000):6000);
+   try{return await navigator.locks.request(name,{mode:'exclusive',signal:controller.signal},async()=>{clearTimeout(timer);return fn();});}
+   catch(e){if(e.name==='AbortError'){const err=new Error('session_lock_timeout');err.isAcquireTimeout=true;throw err;}throw e;}
+   finally{clearTimeout(timer);}
+ };
+ const client=createClient(config.url,config.anonKey,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:false,flowType:'implicit',...(navigator.locks?{lock}:{})}});
  function authMessage(error){
  const c=error?.code||error;
  if(c==='otp_expired'||c==='access_denied')return 'Ce lien est expiré ou déjà utilisé. Demandez un nouveau lien.';
@@ -54,13 +64,16 @@ async function start(){
  if(access==='unpaid'){say('Aucun achat actif retrouvé.');buy.hidden=false;buy.disabled=location.origin!=='https://studio-inspiration-test.pages.dev';buy.textContent=buy.disabled?'Achat bientôt disponible':'Acheter l’accès complet – 14,90 € (test)';}
  }catch{if(n===generation)say('Impossible de vérifier tes accès. Réessaie plus tard.');}
  }
- client.auth.onAuthStateChange((_,session)=>setTimeout(()=>refresh(session),0));
+ let initialized=false;
+ client.auth.onAuthStateChange((event,session)=>{if(initialized&&event!=='INITIAL_SESSION')setTimeout(()=>refresh(session),0);});
  form.querySelector('button').disabled=false;
  form.onsubmit=async e=>{e.preventDefault();const b=form.querySelector('button');notice='';b.disabled=true;try{const {error}=await client.auth.signInWithOtp({email:el('account-email').value.trim(),options:{emailRedirectTo:location.origin+location.pathname+'?auth_return=1',shouldCreateUser:true}});say(error?authMessage(error):'Consulte ta boîte e-mail pour te connecter.');}catch{say('Envoi indisponible.');}finally{b.disabled=false;}};
  logout.onclick=async()=>{try{const {error}=await client.auth.signOut({scope:'local'});if(error)throw error;await refresh(null);}catch{say('Déconnexion impossible.');}};
  buy.onclick=async()=>{buy.disabled=true;try{const {data,error}=await client.functions.invoke('checkout',{body:{}});if(error)throw error;location.assign(checkoutUrl(data.url));}catch{say('Paiement indisponible. Réessaie après vérification de tes accès.');}finally{buy.disabled=false;}};
  diag('D9 — Lecture de la session');
- const {data,error}=await bounded(client.auth.getSession());
+ let result;
+ try{result=await bounded(client.auth.getSession());}catch{diag('D9 — Session temporairement indisponible');say('La connexion est temporairement indisponible.');const retry=document.createElement('button');retry.type='button';retry.textContent='Réessayer la connexion';retry.onclick=()=>location.reload();el('account-message').after(retry);form.querySelector('button').disabled=true;return;}
+ const {data,error}=result;initialized=true;
  diag(data?.session?'D9b — Session trouvée, contrôle des accès':'D9b — Lecture terminée, aucune session');if(error){notice=authMessage(error);await refresh(null);}else await refresh(data.session);diag(error?'D10 — Erreur de lecture de session':data.session?'D10 — Session présente':'D10 — Session absente'+(notice?' : '+notice:''));if(returning||query.has('payment'))el('compte').scrollIntoView();if(query.get('payment')==='success'&&atelier.hidden&&data.session){say('Paiement en cours de confirmation…');for(let i=0;i<8;i++){await new Promise(r=>setTimeout(r,2000));await refresh(data.session);if(!atelier.hidden)break;}}
 }
 await start();
