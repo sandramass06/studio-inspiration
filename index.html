@@ -74,11 +74,13 @@ small{color:#75675e}
 const $=id=>document.getElementById(id);
 const items={
 mode:['Pull','Gilet / Cardigan','T-shirt / Chemisier','Pantalon / Jean','Jupe','Robe','Veste / Manteau','Chaussures','Sac','Autre accessoire'],
-deco:['Canapé','Fauteuil','Mur','Rideaux','Tapis','Meuble'],
+deco:['Canapé','Fauteuil','Mur','Rideaux','Tapis','Meuble','Coussins'],
 bijoux:['Collier','Bracelet','Bague','Boucles d’oreilles','Montre'],
 beaute:['Rouge à lèvres','Fard à paupières','Blush','Vernis']
 };
+const localPhotos={"Mur":"mur","Rideaux":"rideaux","Fauteuil":"fauteuil","Meuble":"meuble","Coussins":"coussins","Tapis":"tapis","Rouge à lèvres":"rouge-levres","Fard à paupières":"fard","Blush":"blush","Vernis":"vernis","Collier":"collier","Bracelet":"bracelet","Bague":"bague","Boucles d’oreilles":"boucles","Montre":"montre"};
 const ids={
+...localPhotos,
 'Canapé':'local-canape',
 'Haut / Pull':'00000000d6bc8210',
 'Sac':'0000000063488210',
@@ -100,7 +102,7 @@ return filesPromise;
 function loadAsset(n){
 if(cache[n])return cache[n];
 cache[n]=(async()=>{
-const found=n==='Canapé'?{name:'canape.svg'}:(await getFiles()).find(f=>f.name.includes(ids[n]));
+const found=localPhotos[n]?{name:'studio-'+localPhotos[n]+'.png'}:n==='Canapé'?{name:'canape.svg'}:(await getFiles()).find(f=>f.name.includes(ids[n]));
 if(!found)throw Error();
 const img=await new Promise((ok,no)=>{
 const im=new Image();im.onload=()=>ok(im);im.onerror=no;im.src=encodeURIComponent(found.name);
