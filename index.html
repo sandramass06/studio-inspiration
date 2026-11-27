@@ -650,7 +650,7 @@ const universe=$('universe').value;const title=box.querySelector('strong')?.text
       });
     }
     const canvas=await html2canvas(box,{
-      scale:2,
+      scale:3,
       backgroundColor:'#faf7f0',
       useCORS:true,
       onclone:doc=>{
@@ -677,7 +677,7 @@ const universe=$('universe').value;const title=box.querySelector('strong')?.text
     ctx.font='26px Georgia';
     ctx.fillText(universe==='mode'?'Ma tenue personnalisée':'Mon inspiration personnalisée',image.width/2,105);
     ctx.drawImage(canvas,0,140);
-    if(cloud){const small=document.createElement('canvas');const scale=Math.min(1,1200/Math.max(image.width,image.height));small.width=Math.round(image.width*scale);small.height=Math.round(image.height*scale);small.getContext('2d').drawImage(image,0,0,small.width,small.height);await window.studioSaveInspiration(universe,title,small.toDataURL('image/jpeg',.85));alert('Inspiration enregistrée dans ton compte.');return;}
+    if(cloud){const small=document.createElement('canvas');const scale=Math.min(1,2400/Math.max(image.width,image.height));small.width=Math.round(image.width*scale);small.height=Math.round(image.height*scale);small.getContext('2d').drawImage(image,0,0,small.width,small.height);let encoded=small.toDataURL('image/jpeg',.96);for(const quality of [.92,.88,.84]){if(encoded.length<=2800000)break;encoded=small.toDataURL('image/jpeg',quality);}if(encoded.length>2800000)throw Error('image_too_large');await window.studioSaveInspiration(universe,title,encoded);alert('Inspiration enregistrée dans ton compte.');return;}
     const lien=document.createElement('a');
     lien.download='Studio-Inspiration-'+universe+'-'+(i+1)+'.png';
     lien.href=image.toDataURL('image/png');
