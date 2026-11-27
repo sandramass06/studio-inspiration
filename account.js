@@ -1,6 +1,13 @@
-import {createClient} from 'https://esm.sh/@supabase/supabase-js@2.49.4';
-import {config} from './account-config.js';
-import {getAccess,checkoutUrl} from './account-core.mjs';
+const diag=stage=>{const e=document.getElementById('auth-diagnostic');if(e)e.textContent=stage;};
+diag('D1 — Module principal démarré');
+async function load(){
+diag('D2 — Chargement de la configuration');
+const {config}=await import('./account-config.js');
+diag('D3 — Chargement du contrôle des accès');
+const {getAccess,checkoutUrl}=await import('./account-core.mjs');
+diag('D4 — Chargement de Supabase');
+const {createClient}=await import('https://esm.sh/@supabase/supabase-js@2.49.4');
+diag('D5 — Bibliothèque chargée');
 const el=id=>document.getElementById(id),say=t=>el('account-message').textContent=t;
 const form=el('account-form'),logout=el('account-logout'),buy=el('account-buy');
 let generation=0;
@@ -18,6 +25,7 @@ async function start(){
  const accessToken=param('access_token'),refreshToken=param('refresh_token'),code=param('code');
  const returning=!!(callbackError||accessToken||refreshToken||code||query.has('auth_return'));
  let notice='';
+ diag('D6 — Initialisation de Supabase');
  const client=createClient(config.url,config.anonKey,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:false,flowType:'implicit'}});
  function authMessage(error){
  const c=error?.code||error;
@@ -26,11 +34,12 @@ async function start(){
  if(c==='over_email_send_rate_limit'||c==='over_request_rate_limit')return 'Trop de demandes. Patientez avant de réessayer.';
  return 'La connexion n’a pas pu être confirmée. Demandez un nouveau lien.';
  }
+ diag(returning?'D7 — Retour du lien détecté':'D7 — Aucun retour de lien détecté');
  if(returning){
  try{
  if(callbackError)notice=authMessage(callbackError);
- else if(accessToken&&refreshToken){const {error}=await client.auth.setSession({access_token:accessToken,refresh_token:refreshToken});if(error)notice=authMessage(error);}
- else if(code){const {error}=await client.auth.exchangeCodeForSession(code);if(error)notice=authMessage(error);}
+ else if(accessToken&&refreshToken){diag('D8 — Validation de la session');const {error}=await client.auth.setSession({access_token:accessToken,refresh_token:refreshToken});if(error)notice=authMessage(error);}
+ else if(code){diag('D8 — Échange du code de connexion');const {error}=await client.auth.exchangeCodeForSession(code);if(error)notice=authMessage(error);}
  else notice='Aucune information de connexion reçue. Demandez un nouveau lien.';
  }catch{notice='Impossible de récupérer la session. Réessayez avec un nouveau lien.';}
  for(const k of ['access_token','refresh_token','provider_token','provider_refresh_token','expires_in','expires_at','token_type','type','code','error','error_code','error_description','auth_return'])url.searchParams.delete(k);
@@ -49,6 +58,9 @@ async function start(){
  form.onsubmit=async e=>{e.preventDefault();const b=form.querySelector('button');notice='';b.disabled=true;try{const {error}=await client.auth.signInWithOtp({email:el('account-email').value.trim(),options:{emailRedirectTo:location.origin+location.pathname+'?auth_return=1',shouldCreateUser:true}});say(error?authMessage(error):'Consulte ta boîte e-mail pour te connecter.');}catch{say('Envoi indisponible.');}finally{b.disabled=false;}};
  logout.onclick=async()=>{try{const {error}=await client.auth.signOut({scope:'local'});if(error)throw error;await refresh(null);}catch{say('Déconnexion impossible.');}};
  buy.onclick=async()=>{buy.disabled=true;try{const {data,error}=await client.functions.invoke('checkout');if(error)throw error;location.assign(checkoutUrl(data.url));}catch{say('Paiement indisponible. Réessaie après vérification de tes accès.');}finally{buy.disabled=false;}};
- const {data,error}=await client.auth.getSession();if(error){notice=authMessage(error);await refresh(null);}else await refresh(data.session);if(returning)el('compte').scrollIntoView();
+ diag('D9 — Lecture de la session');
+ const {data,error}=await client.auth.getSession();if(error){notice=authMessage(error);await refresh(null);}else await refresh(data.session);diag(error?'D10 — Erreur de lecture de session':data.session?'D10 — Session présente':'D10 — Session absente'+(notice?' : '+notice:''));if(returning)el('compte').scrollIntoView();
 }
-start().catch(()=>say('Service de connexion indisponible.'));
+await start();
+}
+load().catch(()=>{const e=document.getElementById('auth-diagnostic');if(e)e.textContent+=' — Échec';document.getElementById('account-message').textContent='Service de connexion indisponible.';});
