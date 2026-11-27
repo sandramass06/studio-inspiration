@@ -117,8 +117,11 @@ case 'Rouge à lèvres':return pink*inside(.25,0,.75,.43);
 case 'Fard à paupières':return Math.max(pink,tan)*inside(.15,.34,.85,.91);
 case 'Blush':return pink*inside(.12,.30,.88,.94);
 case 'Vernis':return pink*inside(.12,.42,.88,.95);
-case 'Montre':return pink*inside(.10,.20,.90,.82);
-case 'Bague':case 'Collier':case 'Bracelet':case 'Boucles d’oreilles':return clamp((r-g-7)/9)*clamp((b-g+5)/8)*clamp((b-r+65)/22)*clamp((245-Math.min(r,g,b))/18);
+case 'Montre':return clamp((1-Math.hypot((x-.50)/.31,(y-.50)/.27))*12)*clamp((r-g-5)/12)*clamp((b-g+24)/18);
+case 'Bague':case 'Collier':case 'Bracelet':case 'Boucles d’oreilles':{
+const region=n==='Bague'?inside(.25,.15,.77,.60):n==='Collier'?inside(.32,.55,.68,.96):n==='Bracelet'?inside(.02,.20,.98,.90):inside(.12,.48,.88,.94);
+return region*clamp((r-g-5)/12)*clamp((b-g+24)/18)*clamp((245-Math.min(r,g,b))/20);
+}
 default:return 0;
 }}
 function loadAsset(n){
