@@ -94,11 +94,8 @@ const ids={
 'Sac souple':'000000000c088210'
 };
 const cache={};
-let filesPromise;
-function getFiles(){
-if(!filesPromise)filesPromise=fetch('https://api.github.com/repos/sandramass06/studio-inspiration/contents/').then(r=>{if(!r.ok)throw Error();return r.json()}).catch(()=>{filesPromise=null;return []});
-return filesPromise;
-}
+const modeFiles=[{"name":"file_000000000c088210ac16f1f22d431561.png"},{"name":"file_0000000063488210b3e7e30044049efd.png"},{"name":"file_0000000098e48210b53b6381167e9988.png"},{"name":"file_00000000a12c8210983485cadbc712fb.png"},{"name":"file_00000000b3a08210bb42986a0841c7f2.png"},{"name":"file_00000000b5e08210902b84d5d05a1913.png"},{"name":"file_00000000b9408210b1f218fdff1c4dab.png"},{"name":"file_00000000c3948210abe5c7fac8bd3818.png"},{"name":"file_00000000d39882108187e6fcc471c50d.png"},{"name":"file_00000000d6bc8210af2e6f7929f20ea7.png"}];
+function getFiles(){return Promise.resolve(modeFiles);}
 function localMask(n,r,g,b,x,y){
 const clamp=v=>Math.max(0,Math.min(1,v));
 const pink=clamp((r-g-12)/25)*clamp((b-g+12)/18);
