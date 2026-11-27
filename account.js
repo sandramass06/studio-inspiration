@@ -51,17 +51,17 @@ async function start(){
  say(session?'Vérification de tes accès…':(notice||'Connecte-toi pour retrouver tes achats.'));
  try{const access=await bounded(getAccess(client,session));if(n!==generation)return;
  if(access==='paid'){say('Accès complet retrouvé. Aucun nouvel achat nécessaire.');enter.hidden=false;atelier.hidden=false;}
- if(access==='unpaid'){say('Aucun achat actif retrouvé.');buy.hidden=false;buy.disabled=true;buy.textContent='Achat bientôt disponible';}
+ if(access==='unpaid'){say('Aucun achat actif retrouvé.');buy.hidden=false;buy.disabled=location.origin!=='https://studio-inspiration-test.pages.dev';buy.textContent=buy.disabled?'Achat bientôt disponible':'Acheter l’accès complet – 14,90 € (test)';}
  }catch{if(n===generation)say('Impossible de vérifier tes accès. Réessaie plus tard.');}
  }
  client.auth.onAuthStateChange((_,session)=>setTimeout(()=>refresh(session),0));
  form.querySelector('button').disabled=false;
  form.onsubmit=async e=>{e.preventDefault();const b=form.querySelector('button');notice='';b.disabled=true;try{const {error}=await client.auth.signInWithOtp({email:el('account-email').value.trim(),options:{emailRedirectTo:location.origin+location.pathname+'?auth_return=1',shouldCreateUser:true}});say(error?authMessage(error):'Consulte ta boîte e-mail pour te connecter.');}catch{say('Envoi indisponible.');}finally{b.disabled=false;}};
  logout.onclick=async()=>{try{const {error}=await client.auth.signOut({scope:'local'});if(error)throw error;await refresh(null);}catch{say('Déconnexion impossible.');}};
- buy.onclick=async()=>{buy.disabled=true;try{const {data,error}=await client.functions.invoke('checkout');if(error)throw error;location.assign(checkoutUrl(data.url));}catch{say('Paiement indisponible. Réessaie après vérification de tes accès.');}finally{buy.disabled=false;}};
+ buy.onclick=async()=>{buy.disabled=true;try{const {data,error}=await client.functions.invoke('checkout',{body:{}});if(error)throw error;location.assign(checkoutUrl(data.url));}catch{say('Paiement indisponible. Réessaie après vérification de tes accès.');}finally{buy.disabled=false;}};
  diag('D9 — Lecture de la session');
  const {data,error}=await bounded(client.auth.getSession());
- diag(data?.session?'D9b — Session trouvée, contrôle des accès':'D9b — Lecture terminée, aucune session');if(error){notice=authMessage(error);await refresh(null);}else await refresh(data.session);diag(error?'D10 — Erreur de lecture de session':data.session?'D10 — Session présente':'D10 — Session absente'+(notice?' : '+notice:''));if(returning)el('compte').scrollIntoView();
+ diag(data?.session?'D9b — Session trouvée, contrôle des accès':'D9b — Lecture terminée, aucune session');if(error){notice=authMessage(error);await refresh(null);}else await refresh(data.session);diag(error?'D10 — Erreur de lecture de session':data.session?'D10 — Session présente':'D10 — Session absente'+(notice?' : '+notice:''));if(returning||query.has('payment'))el('compte').scrollIntoView();if(query.get('payment')==='success'&&atelier.hidden&&data.session){say('Paiement en cours de confirmation…');for(let i=0;i<8;i++){await new Promise(r=>setTimeout(r,2000));await refresh(data.session);if(!atelier.hidden)break;}}
 }
 await start();
 }
