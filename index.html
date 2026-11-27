@@ -581,7 +581,6 @@ roles=function(style){
 const afficherTenues=show;
 show=async function(h){
   if(await afficherTenues(h)===false)return false;
-  if($('universe').value!=='mode')return;
   document.querySelectorAll('.harmony').forEach((box,i)=>{
     if(i>2)return;
     const ancien=box.querySelector('.autre-tenue');
@@ -589,7 +588,7 @@ show=async function(h){
     const bouton=document.createElement('button');
     bouton.type='button';
     bouton.className='autre-tenue';
-    bouton.textContent='Voir une autre tenue';
+    bouton.textContent=$('universe').value==='mode'?'Voir une autre tenue':'Voir une autre harmonie';
     bouton.style.cssText='display:block;width:100%;margin-top:16px;padding:14px;border:1px solid #c9b9a5;border-radius:12px;background:#f1e9df;color:#51463b;cursor:pointer;';
     bouton.onclick=function(){
       choixTenue[i]=1-choixTenue[i];
@@ -624,7 +623,6 @@ roles=function(style){
 const showRotation=show;
 show=async function(h){
   if(await showRotation(h)===false)return false;
-  if($('universe').value!=='mode')return;
   document.querySelectorAll('.autre-tenue').forEach((bouton,i)=>{
     bouton.onclick=function(){
       rotationTenues[i]++;
@@ -674,10 +672,10 @@ async function enregistrerTenue(box,i){
     ctx.textAlign='center';
     ctx.fillText('Studio Inspiration',image.width/2,60);
     ctx.font='26px Georgia';
-    ctx.fillText('Ma tenue personnalisée',image.width/2,105);
+    ctx.fillText($('universe').value==='mode'?'Ma tenue personnalisée':'Mon inspiration personnalisée',image.width/2,105);
     ctx.drawImage(canvas,0,140);
     const lien=document.createElement('a');
-    lien.download='Studio-Inspiration-tenue-'+(i+1)+'.png';
+    lien.download='Studio-Inspiration-'+$('universe').value+'-'+(i+1)+'.png';
     lien.href=image.toDataURL('image/png');
     document.body.appendChild(lien);
     lien.click();
@@ -686,19 +684,18 @@ async function enregistrerTenue(box,i){
     alert('Enregistrement impossible. Réessaie.');
   }finally{
     bouton.disabled=false;
-    bouton.textContent='Enregistrer ma tenue';
+    bouton.textContent=$('universe').value==='mode'?'Enregistrer ma tenue':'Enregistrer mon inspiration';
   }
 }
 const showAvantEnregistrement=show;
 show=async function(h){
   if(await showAvantEnregistrement(h)===false)return false;
-  if($('universe').value!=='mode')return;
   document.querySelectorAll('.harmony').forEach((box,i)=>{
     if(box.querySelector('.enregistrer-tenue'))return;
     const bouton=document.createElement('button');
     bouton.type='button';
     bouton.className='enregistrer-tenue';
-    bouton.textContent='Enregistrer ma tenue';
+    bouton.textContent=$('universe').value==='mode'?'Enregistrer ma tenue':'Enregistrer mon inspiration';
     bouton.style.cssText='display:block;width:100%;margin-top:10px;padding:14px;border:0;border-radius:12px;background:#756653;color:white;cursor:pointer;';
     bouton.onclick=()=>enregistrerTenue(box,i);
     box.appendChild(bouton);
