@@ -6,6 +6,7 @@ Deno.serve(async req=>{
  if(req.method!=='POST')return new Response('',{status:405});
  let event:Stripe.Event;
  try{event=await stripe.webhooks.constructEventAsync(await req.text(),req.headers.get('stripe-signature')||'',Deno.env.get('STRIPE_WEBHOOK_SECRET')!,undefined,Stripe.createSubtleCryptoProvider());}catch{return new Response('',{status:400});}
+ if(event.livemode)return new Response('ignored');
  if(!['checkout.session.completed','checkout.session.async_payment_succeeded'].includes(event.type))return new Response('ok');
  const s=event.data.object as Stripe.Checkout.Session;
  if(s.payment_status!=='paid'||s.mode!=='payment'||s.metadata?.product!=='studio-full'||!s.metadata.user_id||s.client_reference_id!==s.metadata.user_id)return new Response('ignored');
