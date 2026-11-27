@@ -410,7 +410,7 @@ return rolesV12(style);
 };
   const showCardigan=show;
 show=async function(h){
-showCardigan(h);
+if(await showCardigan(h)===false)return false;
 if($('universe').value!=='mode'||$('piece').value!=='Gilet / Cardigan')return;
 document.querySelectorAll('.harmony').forEach(box=>{
 const visual=box.querySelector('.visual');
@@ -444,7 +444,7 @@ document.head.appendChild(centerStyle);
 });
 const showAccessories=show;
 show=async function(h){
-showAccessories(h);
+if(await showAccessories(h)===false)return false;
 if($('universe').value!=='mode')return;
 const extras=[
 [['Créoles','#b89a62'],['Ceinture','#795239']],
@@ -479,7 +479,7 @@ advice.append(line);
 };
   const showLayout=show;
 show=async function(h){
-showLayout(h);
+if(await showLayout(h)===false)return false;
 if($('universe').value!=='mode')return;
 document.querySelectorAll('.visual').forEach(v=>{
 const items=Array.from(v.children);
