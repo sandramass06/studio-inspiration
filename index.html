@@ -99,6 +99,28 @@ function getFiles(){
 if(!filesPromise)filesPromise=fetch('https://api.github.com/repos/sandramass06/studio-inspiration/contents/').then(r=>{if(!r.ok)throw Error();return r.json()}).catch(()=>{filesPromise=null;return []});
 return filesPromise;
 }
+function localMask(n,r,g,b,x,y){
+const clamp=v=>Math.max(0,Math.min(1,v));
+const pink=clamp((r-g-12)/25)*clamp((b-g+12)/18);
+const blue=clamp((b-r-4)/18);
+const teal=clamp((g-r-5)/18);
+const tan=clamp((r-b-16)/30)*clamp((245-r)/25);
+const inside=(l,t,rr,bb)=>x>=l&&x<=rr&&y>=t&&y<=bb?1:0;
+switch(n){
+case 'Mur':return pink*inside(0,0,1,.82);
+case 'Fauteuil':return blue*inside(.04,.02,.96,.84);
+case 'Rideaux':return tan*inside(.09,.08,.92,.98);
+case 'Meuble':return tan*inside(.04,.13,.96,.76);
+case 'Coussins':return Math.max(pink,tan)*inside(.02,.03,.98,.88);
+case 'Tapis':return Math.max(teal,blue)*inside(.01,.03,.99,.87);
+case 'Rouge à lèvres':return pink*inside(.25,0,.75,.43);
+case 'Fard à paupières':return Math.max(pink,tan)*inside(.15,.34,.85,.91);
+case 'Blush':return pink*inside(.12,.30,.88,.94);
+case 'Vernis':return pink*inside(.12,.42,.88,.95);
+case 'Montre':return pink*inside(.10,.20,.90,.82);
+case 'Bague':case 'Collier':case 'Bracelet':case 'Boucles d’oreilles':return pink;
+default:return 0;
+}}
 function loadAsset(n){
 if(cache[n])return cache[n];
 cache[n]=(async()=>{
@@ -114,6 +136,7 @@ c.height=Math.max(1,Math.round(img.height*s));
 const x=c.getContext('2d');
 x.drawImage(img,0,0,c.width,c.height);
 const d=x.getImageData(0,0,c.width,c.height);
+if(localPhotos[n]){let sum=0,weight=0;for(let i=0;i<d.data.length;i+=4){const p=i/4,R=d.data[i],G=d.data[i+1],B=d.data[i+2];const m=localMask(n,R,G,B,(p%c.width)/c.width,Math.floor(p/c.width)/c.height);sum+=m*(.2126*R+.7152*G+.0722*B);weight+=m;}return {data:d,mean:weight?sum/weight:160};}
 let l=c.width,r=0,t=c.height,b=0,sum=0,count=0;
 for(let y=0;y<c.height;y++)for(let z=0;z<c.width;z++){
 const i=(y*c.width+z)*4;
@@ -184,6 +207,7 @@ if(!src.data[i+3])continue;
 const r=src.data[i],g=src.data[i+1],b=src.data[i+2];
 const delta=.2126*r+.7152*g+.0722*b-a.mean;
 let mask=Math.max(0,Math.min(1,(253-Math.min(r,g,b))/20));
+if(localPhotos[n]){const p=i/4;mask=localMask(n,r,g,b,(p%src.width)/src.width,Math.floor(p/src.width)/src.height);}
 if(n==='Canapé')mask=Math.max(0,Math.min(1,(b-r-5)/15));
 if((n==='Sac'||n==='Petit sac')&&Math.max(r,g,b)-Math.min(r,g,b)>25&&r>b+15)mask*=.15;
 for(let j=0;j<3;j++){
@@ -212,8 +236,8 @@ return e;
 function roles(style){
 const p=$('piece').value,u=$('universe').value;
 if(u!=='mode'){
-const rest=u==='deco'?['Canapé','Mur','Coussins','Tapis']:items[u];
-return [p,...rest.filter(n=>n!==p).slice(0,3)];
+const rest=items[u].filter(n=>n!==p);const offset=(style*3)%rest.length;
+return [p,...rest.slice(offset).concat(rest.slice(0,offset)).slice(0,3)];
 }
 const bottom=['Pantalon / Jean','Jupe','Jean droit'][style];
 const bag=['Sac','Petit sac','Sac souple'][style];
