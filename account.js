@@ -37,7 +37,7 @@ async function start(){
    catch(e){if(e.name==='AbortError'){const err=new Error('session_lock_timeout');err.isAcquireTimeout=true;throw err;}throw e;}
    finally{clearTimeout(timer);}
  };
- const client=createClient(config.url,config.anonKey,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:false,flowType:'implicit',...(navigator.locks?{lock}:{})}});
+ const client=createClient(config.url,config.anonKey,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:false,flowType:'implicit',storageKey:'studio-inspiration-test-auth-v3',...(navigator.locks?{lock}:{})}});
  function authMessage(error){
  const c=error?.code||error;
  if(c==='otp_expired'||c==='access_denied')return 'Ce lien est expiré ou déjà utilisé. Demandez un nouveau lien.';
@@ -72,7 +72,7 @@ async function start(){
  buy.onclick=async()=>{buy.disabled=true;try{const {data,error}=await client.functions.invoke('checkout',{body:{}});if(error)throw error;location.assign(checkoutUrl(data.url));}catch{say('Paiement indisponible. Réessaie après vérification de tes accès.');}finally{buy.disabled=false;}};
  diag('D9 — Lecture de la session');
  let result;
- try{result=await bounded(client.auth.getSession());}catch{diag('D9 — Session temporairement indisponible');say('La connexion est temporairement indisponible.');const retry=document.createElement('button');retry.type='button';retry.textContent='Réessayer la connexion';retry.onclick=()=>location.reload();el('account-message').after(retry);form.querySelector('button').disabled=true;return;}
+ try{result=await bounded(client.auth.getSession());}catch{diag('D9 — Nouvelle session temporairement indisponible');say('La connexion est temporairement indisponible.');const retry=document.createElement('button');retry.type='button';retry.textContent='Réessayer la connexion';retry.onclick=()=>location.reload();el('account-message').after(retry);form.querySelector('button').disabled=true;return;}
  const {data,error}=result;initialized=true;
  diag(data?.session?'D9b — Session trouvée, contrôle des accès':'D9b — Lecture terminée, aucune session');if(error){notice=authMessage(error);await refresh(null);}else await refresh(data.session);diag(error?'D10 — Erreur de lecture de session':data.session?'D10 — Session présente':'D10 — Session absente'+(notice?' : '+notice:''));if(returning||query.has('payment'))el('compte').scrollIntoView();if(query.get('payment')==='success'&&atelier.hidden&&data.session){say('Paiement en cours de confirmation…');for(let i=0;i<8;i++){await new Promise(r=>setTimeout(r,2000));await refresh(data.session);if(!atelier.hidden)break;}}
 }
