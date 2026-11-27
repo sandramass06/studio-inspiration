@@ -633,10 +633,12 @@ show=async function(h){
 </script>
 <script>
 async function enregistrerTenue(box,i,cloud=false){
-const universe=$('universe').value;const title=box.querySelector('strong').textContent;
-  const bouton=box.querySelector('.enregistrer-tenue');
-  bouton.disabled=true;
-  bouton.textContent='Enregistrement en cours...';
+const universe=$('universe').value;const title=box.querySelector('strong')?.textContent||'Mon inspiration';
+  const bouton=box.querySelector(cloud?'.sauvegarder-inspiration':'.enregistrer-tenue');
+  const controls=box.querySelectorAll('.enregistrer-tenue,.sauvegarder-inspiration');
+  if(Array.from(controls).some(b=>b.disabled))return;
+  controls.forEach(b=>b.disabled=true);
+  bouton.textContent=cloud?'Sauvegarde en cours…':'Téléchargement en cours…';
   try{
     if(!window.html2canvas){
       await new Promise((resolve,reject)=>{
@@ -673,11 +675,11 @@ const universe=$('universe').value;const title=box.querySelector('strong').textC
     ctx.textAlign='center';
     ctx.fillText('Studio Inspiration',image.width/2,60);
     ctx.font='26px Georgia';
-    ctx.fillText($('universe').value==='mode'?'Ma tenue personnalisée':'Mon inspiration personnalisée',image.width/2,105);
+    ctx.fillText(universe==='mode'?'Ma tenue personnalisée':'Mon inspiration personnalisée',image.width/2,105);
     ctx.drawImage(canvas,0,140);
     if(cloud){const small=document.createElement('canvas');const scale=Math.min(1,1200/Math.max(image.width,image.height));small.width=Math.round(image.width*scale);small.height=Math.round(image.height*scale);small.getContext('2d').drawImage(image,0,0,small.width,small.height);await window.studioSaveInspiration(universe,title,small.toDataURL('image/jpeg',.85));alert('Inspiration enregistrée dans ton compte.');return;}
     const lien=document.createElement('a');
-    lien.download='Studio-Inspiration-'+$('universe').value+'-'+(i+1)+'.png';
+    lien.download='Studio-Inspiration-'+universe+'-'+(i+1)+'.png';
     lien.href=image.toDataURL('image/png');
     document.body.appendChild(lien);
     lien.click();
@@ -685,23 +687,28 @@ const universe=$('universe').value;const title=box.querySelector('strong').textC
   }catch(e){
     alert('Enregistrement impossible. Réessaie.');
   }finally{
-    bouton.disabled=false;
-    bouton.textContent=$('universe').value==='mode'?'Enregistrer ma tenue':'Enregistrer mon inspiration';
+    controls.forEach(b=>b.disabled=false);
+    bouton.innerHTML=cloud?inspirationHeart:inspirationDownload;
   }
 }
+const inspirationHeart='<svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8Z"/></svg> Ajouter à mes inspirations';
+const inspirationDownload='<svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m-5-5 5 5 5-5M4 16v4h16v-4"/></svg> Télécharger l’image';
 const showAvantEnregistrement=show;
 show=async function(h){
   if(await showAvantEnregistrement(h)===false)return false;
   document.querySelectorAll('.harmony').forEach((box,i)=>{
     if(box.querySelector('.enregistrer-tenue'))return;
+    const style='display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin-top:10px;padding:14px;border-radius:12px;cursor:pointer;';
+    const save=document.createElement('button');
+    save.type='button';save.className='sauvegarder-inspiration';save.innerHTML=inspirationHeart;
+    save.style.cssText=style+'border:1px solid #756653;background:#756653;color:white;';
+    save.onclick=()=>enregistrerTenue(box,i,true);
+    box.appendChild(save);
     const bouton=document.createElement('button');
-    bouton.type='button';
-    bouton.className='enregistrer-tenue';
-    bouton.textContent=$('universe').value==='mode'?'Enregistrer ma tenue':'Enregistrer mon inspiration';
-    bouton.style.cssText='display:block;width:100%;margin-top:10px;padding:14px;border:0;border-radius:12px;background:#756653;color:white;cursor:pointer;';
+    bouton.type='button';bouton.className='enregistrer-tenue';bouton.innerHTML=inspirationDownload;
+    bouton.style.cssText=style+'border:1px solid #756653;background:transparent;color:#51463b;';
     bouton.onclick=()=>enregistrerTenue(box,i);
     box.appendChild(bouton);
-    const save=bouton.cloneNode();save.textContent='Sauvegarder dans Mes inspirations';save.onclick=async()=>{save.disabled=true;try{await enregistrerTenue(box,i,true);}finally{save.disabled=false;}};box.appendChild(save);
   });
 };
 </script>
