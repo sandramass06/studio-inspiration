@@ -355,7 +355,7 @@ const top=Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,5);
 $('colors').replaceChildren();top.forEach(([h])=>$('colors').append(swatch(h,true)));
 img.hidden=false;$('results').hidden=false;
 show(top.length?top[0][0]:'#ffffff');
-$('status').textContent='Touche directement la couleur de ton vêtement.';
+$('status').textContent='Touche directement la couleur que tu souhaites associer sur ta photo.';
 }catch(e){$('status').textContent='Analyse impossible.'}
 };
 img.onerror=()=>$('status').textContent='Photo illisible.';
