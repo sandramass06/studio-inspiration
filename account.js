@@ -31,14 +31,14 @@ async function validate(){
  catch(e){if([400,401,403].includes(e.status)){clear();return null;}throw e;}
  });
 }
-function hide(){buy.hidden=true;enter.hidden=true;atelier.hidden=true;}
+function hide(){el("inspirations-open").hidden=true;el("inspirations").hidden=true;el("inspirations-list").replaceChildren();buy.hidden=true;enter.hidden=true;atelier.hidden=true;}
 function guest(message='Connecte-toi pour retrouver tes achats.'){hide();form.hidden=false;form.querySelector('button').disabled=false;logout.hidden=true;el('account-email-label').textContent='';say(message);diag('Session absente');}
 async function access(){
  hide();form.hidden=true;logout.hidden=false;el('account-email-label').textContent=user.email||'';
  say('Vérification de tes accès…');
  const rows=await api('/rest/v1/entitlements?select=product&product=eq.studio-full&active=eq.true&user_id=eq.'+encodeURIComponent(user.id),{token:session.access_token});
  if(!Array.isArray(rows))throw new Error('invalid_access');
- if(rows.length){enter.hidden=false;atelier.hidden=false;say('Accès complet retrouvé. Aucun nouvel achat nécessaire.');}
+ if(rows.length){el("inspirations-open").hidden=false;enter.hidden=false;atelier.hidden=false;say('Accès complet retrouvé. Aucun nouvel achat nécessaire.');}
  else{buy.hidden=false;buy.disabled=!test;buy.textContent=test?'Acheter l’accès complet – 14,90 € (test)':'Achat bientôt disponible';say('Aucun achat actif retrouvé.');}
  diag('Session vérifiée');
 }
@@ -72,3 +72,10 @@ window.addEventListener('storage',e=>{if(e.key===key&&!busy){validate().then(u=>
 start().catch(failure);
 
 window.studioAnalyze=async(h,universe,rotationTenues)=>{const u=await validate();if(!u)throw Error('auth');return api('/functions/v1/studio-analysis',{method:'POST',body:{h,universe,rotationTenues},token:session.access_token});};
+
+const library=el('inspirations'), list=el('inspirations-list'), message=el('inspirations-status'), filter=el('inspirations-filter');
+let libraryRequest=0;
+async function librarySession(){const u=await validate();if(!u)throw Error('auth');return {u,token:session.access_token};}
+window.studioSaveInspiration=async(universe,title,image)=>{const {u,token}=await librarySession();await api('/rest/v1/studio_inspirations',{method:'POST',token,body:{user_id:u.id,universe,title,image}});if(!library.hidden)await loadLibrary();};
+async function loadLibrary(){const n=++libraryRequest;list.replaceChildren();message.textContent='Chargement…';try{const {u,token}=await librarySession();const rows=await api('/rest/v1/studio_inspirations?select=id,universe,title,created_at&order=created_at.desc&limit=100'+(filter.value?'&universe=eq.'+encodeURIComponent(filter.value):''),{token});if(n!==libraryRequest||library.hidden||read()?.access_token!==token)return;message.textContent=rows.length?'':'Aucune inspiration enregistrée.';for(const row of rows){const card=document.createElement('div');card.className='harmony';const title=document.createElement('strong');title.textContent=row.title+' — '+({mode:'Mode',deco:'Décoration',beaute:'Maquillage',bijoux:'Bijoux'}[row.universe]);card.append(title);const view=document.createElement('button');view.textContent='Consulter / télécharger';view.onclick=async()=>{try{const {token}=await librarySession();const data=await api('/rest/v1/studio_inspirations?select=image&id=eq.'+encodeURIComponent(row.id),{token});if(library.hidden||!data[0]||!/^data:image\/jpeg;base64,[A-Za-z0-9+/=]+$/.test(data[0].image))return;const img=document.createElement('img');img.src=data[0].image;img.style.maxWidth='100%';const a=document.createElement('a');a.className='cta';a.href=img.src;a.download='Studio-Inspiration.jpg';a.textContent='Télécharger';card.append(img,a);view.disabled=true;}catch{message.textContent='Consultation impossible.';}};const del=document.createElement('button');del.textContent='Supprimer';del.onclick=async()=>{if(!confirm('Supprimer cette inspiration ?'))return;try{const {token}=await librarySession();await api('/rest/v1/studio_inspirations?id=eq.'+encodeURIComponent(row.id),{method:'DELETE',token});await loadLibrary();}catch{message.textContent='Suppression impossible.';}};card.append(view,del);list.append(card);}}catch{if(n===libraryRequest)message.textContent='Chargement impossible. Réessaie.';}}
+el('inspirations-open').onclick=()=>{library.hidden=false;library.scrollIntoView({block:'start'});loadLibrary();};filter.onchange=loadLibrary;
