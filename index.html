@@ -254,63 +254,16 @@ if(p==='Robe')return [p,'Veste / Manteau',bag,shoes];
 if(p==='Veste / Manteau')return [p,bottom,bag,shoes];
 return [p,'Haut / Pull',bottom,shoes];
 }
-function show(h){
+let analysisRequest=0;
+async function show(h){
 current=h;
 $('selected').innerHTML='<div class="sample" style="background:'+h+'"></div><strong>'+name(h)+' — '+h+'</strong>';
-const neutral=Math.max(...rgb(h))-Math.min(...rgb(h))<35;
-const opposite=hex(rgb(h).map(v=>255-v));
-const palettes=[
-['Chic et élégant',[h,'#f5f0e5','#b89a62','#252525']],
-['Doux et féminin',[h,neutral?'#d8a6b2':mix(h,'#ffffff',.65),'#f5e9e2','#bdb6ae']],
-['Naturel et moderne',[h,neutral?'#a5b39a':mix(opposite,'#b5b09a',.65),'#d5bfa5','#faf7f0']]
-];
-  palettes.forEach(([title,list],style)=>{
-const alternatives=[
-['#722f37','#243b53','#b89a62','#f5f0e5'],
-['#d8a6b2','#bdb6ae','#c5b5d8','#f5e9e2'],
-['#a5b39a','#d5bfa5','#526b65','#faf7f0']
-][style];
-const distance=(a,b)=>Math.hypot(...rgb(a).map((v,i)=>v-rgb(b)[i]));
-for(let i=1;i<list.length;i++){
-if(list.slice(0,i).some(c=>distance(c,list[i])<55)){
-list[i]=alternatives.find(a=>list.slice(0,i).every(c=>distance(c,a)>=55))||list[i];
-}
-}
-});
-  palettes.forEach(([title,list])=>{
-const choices=['#d5bfa5','#526b65','#d8a6b2','#243b53','#a5b39a','#722f37','#f5f0e5','#795239','#b89a62','#252525'];
-for(let i=1;i<list.length;i++){
-const used=list.slice(0,i);
-const valid=c=>used.every(a=>name(a)!==name(c)&&Math.hypot(...rgb(a).map((v,j)=>v-rgb(c)[j]))>=45);
-if(!valid(list[i])){
-list[i]=choices.find(valid)||list[i];
-}
-}
-});
-  
-if($('universe').value==='mode'){
-  const couleur=name(h).toLowerCase();
-  let famille='beige';
-  if(/noir/.test(couleur))famille='noir';
-  else if(/blanc|écru|ivoire/.test(couleur))famille='blanc';
-  else if(/gris/.test(couleur))famille='gris';
-  else if(/kaki|olive/.test(couleur))famille='kaki';
-  else if(/marine/.test(couleur))famille='marine';
-  else if(/terracotta|orange|rouille/.test(couleur))famille='terracotta';
-  else if(/marron|camel|chocolat|brun/.test(couleur))famille='marron';
-  else if(/bordeaux|rouge/.test(couleur))famille='rouge';
-  else if(/rose|lilas|violet/.test(couleur))famille='rose';
-  else if(/vert/.test(couleur))famille='vert';
-  else if(/bleu/.test(couleur))famille='bleu';
-  palettes.forEach((palette,style)=>{
-    const variantes=harmoniesMode[famille][style];
-    const tour=rotationTenues[style]%variantes.length;
-    const [haut,accessoire]=variantes[tour];
-    palette[1]=[h,haut,accessoire,style===2?haut:accessoire];
-  });
-}
-
-  const own=document.querySelector('input[name="display"]:checked').value==='photo';
+const request=++analysisRequest;
+$('harmonies').textContent='Analyse sécurisée en cours…';
+let palettes;
+try{({palettes}=await window.studioAnalyze(h,$('universe').value,rotationTenues.map(v=>v%3)));}catch(e){if(request===analysisRequest)$('harmonies').textContent='Analyse indisponible. Vérifie ta connexion et ton accès.';return false;}
+if(request!==analysisRequest||current!==h)return false;
+const own=document.querySelector('input[name="display"]:checked').value==='photo';
 $('harmonies').replaceChildren();
 palettes.forEach(([title,list],style)=>{
 const box=document.createElement('div');box.className='harmony';
@@ -338,7 +291,7 @@ $('universe').onchange=()=>{pieces();if(current)show(current)};
 $('piece').onchange=()=>{if(current)show(current)};
 $('photo').onchange=function(){
 if(!this.files[0])return;
-current=null;$('results').hidden=true;$('preview').hidden=true;
+analysisRequest++;current=null;$('results').hidden=true;$('preview').hidden=true;
 $('status').textContent='Analyse en cours...';
 if(url)URL.revokeObjectURL(url);
 url=URL.createObjectURL(this.files[0]);
@@ -381,8 +334,8 @@ if(d[3]>=128)show(hex([d[0],d[1],d[2]]));
 'Sac souple':'Sac cabas souple'
 };
 const previousShow=show;
-show=function(h){
-previousShow(h);
+show=async function(h){
+if(await previousShow(h)===false)return false;
 if($('universe').value!=='mode')return;
 document.querySelectorAll('.harmony').forEach(box=>{
 const labels=box.querySelectorAll('.visual>div>div:nth-child(2)');
@@ -409,8 +362,8 @@ if(e.textContent==='Version 0.9')e.textContent='Version 1.0';
 'Robe midi':'91848210'
 });
 const showV11=show;
-show=function(h){
-showV11(h);
+show=async function(h){
+if(await showV11(h)===false)return false;
 };
 document.querySelectorAll('small').forEach(e=>{
 if(e.textContent==='Version 1.0')e.textContent='Version 1.1';
@@ -459,7 +412,7 @@ return [p,['Pantalon / Jean','Jupe','Jean droit'][style],['Sac','Petit sac','Sac
 return rolesV12(style);
 };
   const showCardigan=show;
-show=function(h){
+show=async function(h){
 showCardigan(h);
 if($('universe').value!=='mode'||$('piece').value!=='Gilet / Cardigan')return;
 document.querySelectorAll('.harmony').forEach(box=>{
@@ -493,7 +446,7 @@ document.head.appendChild(centerStyle);
 'Lunettes de soleil':'eb548210'
 });
 const showAccessories=show;
-show=function(h){
+show=async function(h){
 showAccessories(h);
 if($('universe').value!=='mode')return;
 const extras=[
@@ -528,7 +481,7 @@ advice.append(line);
 });
 };
   const showLayout=show;
-show=function(h){
+show=async function(h){
 showLayout(h);
 if($('universe').value!=='mode')return;
 document.querySelectorAll('.visual').forEach(v=>{
@@ -629,8 +582,8 @@ roles=function(style){
   return tenueInitiale(style);
 };
 const afficherTenues=show;
-show=function(h){
-  afficherTenues(h);
+show=async function(h){
+  if(await afficherTenues(h)===false)return false;
   if($('universe').value!=='mode')return;
   document.querySelectorAll('.harmony').forEach((box,i)=>{
     if(i>2)return;
@@ -672,8 +625,8 @@ roles=function(style){
   });
 };
 const showRotation=show;
-show=function(h){
-  showRotation(h);
+show=async function(h){
+  if(await showRotation(h)===false)return false;
   if($('universe').value!=='mode')return;
   document.querySelectorAll('.autre-tenue').forEach((bouton,i)=>{
     bouton.onclick=function(){
@@ -740,8 +693,8 @@ async function enregistrerTenue(box,i){
   }
 }
 const showAvantEnregistrement=show;
-show=function(h){
-  showAvantEnregistrement(h);
+show=async function(h){
+  if(await showAvantEnregistrement(h)===false)return false;
   if($('universe').value!=='mode')return;
   document.querySelectorAll('.harmony').forEach((box,i)=>{
     if(box.querySelector('.enregistrer-tenue'))return;
@@ -756,68 +709,7 @@ show=function(h){
 };
 </script>
 <script>
-const harmoniesMode={
-  noir:[
-    [['#f5f0e5','#292929'],['#722f37','#292929'],['#a8a8a8','#f5f0e5']],
-    [['#d8a6b2','#d5bfa5'],['#c5b5d8','#292929'],['#f5e9e2','#79543b']],
-    [['#a5b39a','#faf7f0'],['#a8bfd5','#faf7f0'],['#d5bfa5','#986a45']]
-  ],
-  blanc:[
-    [['#243b53','#986a45'],['#292929','#292929'],['#722f37','#79543b']],
-    [['#d8a6b2','#d5bfa5'],['#c5b5d8','#ae967c'],['#a8bfd5','#d5bfa5']],
-    [['#595c40','#986a45'],['#526b65','#d5bfa5'],['#b56549','#79543b']]
-  ],
-  gris:[
-    [['#243b53','#292929'],['#f5f0e5','#292929'],['#722f37','#292929']],
-    [['#d8a6b2','#f5f0e5'],['#c5b5d8','#faf7f0'],['#a8bfd5','#292929']],
-    [['#faf7f0','#292929'],['#a5b39a','#faf7f0'],['#526b65','#292929']]
-  ],
-  beige:[
-    [['#243b53','#79543b'],['#292929','#292929'],['#722f37','#79543b']],
-    [['#d8a6b2','#ae967c'],['#f5f0e5','#986a45'],['#a8bfd5','#79543b']],
-    [['#595c40','#986a45'],['#faf7f0','#79543b'],['#526b65','#986a45']]
-  ],
-  marron:[
-    [['#f5f0e5','#79543b'],['#243b53','#79543b'],['#292929','#292929']],
-    [['#d8a6b2','#d5bfa5'],['#a8bfd5','#f5f0e5'],['#f5e9e2','#ae967c']],
-    [['#a5b39a','#faf7f0'],['#595c40','#d5bfa5'],['#faf7f0','#986a45']]
-  ],
-  kaki:[
-    [['#f5f0e5','#292929'],['#292929','#986a45'],['#d5bfa5','#79543b']],
-    [['#d8a6b2','#d5bfa5'],['#f5e9e2','#ae967c'],['#f5f0e5','#986a45']],
-    [['#faf7f0','#986a45'],['#a5b39a','#f5f0e5'],['#d5bfa5','#79543b']]
-  ],
-  vert:[
-    [['#f5f0e5','#292929'],['#292929','#292929'],['#d5bfa5','#79543b']],
-    [['#d8a6b2','#d5bfa5'],['#f5e9e2','#ae967c'],['#faf7f0','#986a45']],
-    [['#a5b39a','#faf7f0'],['#f5f0e5','#986a45'],['#d5bfa5','#79543b']]
-  ],
-  marine:[
-    [['#f5f0e5','#79543b'],['#722f37','#79543b'],['#a8a8a8','#292929']],
-    [['#d8a6b2','#d5bfa5'],['#a8bfd5','#faf7f0'],['#f5e9e2','#ae967c']],
-    [['#faf7f0','#986a45'],['#d5bfa5','#79543b'],['#a8bfd5','#faf7f0']]
-  ],
-  bleu:[
-    [['#243b53','#243b53'],['#f5f0e5','#79543b'],['#292929','#292929']],
-    [['#d8a6b2','#d5bfa5'],['#f5e9e2','#ae967c'],['#c5b5d8','#faf7f0']],
-    [['#faf7f0','#986a45'],['#d5bfa5','#79543b'],['#243b53','#faf7f0']]
-  ],
-  rose:[
-    [['#292929','#292929'],['#243b53','#243b53'],['#f5f0e5','#79543b']],
-    [['#f5e9e2','#d5bfa5'],['#c5b5d8','#faf7f0'],['#a8a8a8','#faf7f0']],
-    [['#faf7f0','#986a45'],['#a5b39a','#d5bfa5'],['#d5bfa5','#79543b']]
-  ],
-  rouge:[
-    [['#292929','#292929'],['#f5f0e5','#79543b'],['#243b53','#243b53']],
-    [['#d8a6b2','#d5bfa5'],['#f5e9e2','#ae967c'],['#a8a8a8','#292929']],
-    [['#faf7f0','#986a45'],['#d5bfa5','#79543b'],['#a8bfd5','#faf7f0']]
-  ],
-  terracotta:[
-    [['#f5f0e5','#79543b'],['#292929','#292929'],['#d5bfa5','#79543b']],
-    [['#f5e9e2','#ae967c'],['#f5f0e5','#d5bfa5'],['#d5bfa5','#986a45']],
-    [['#a5b39a','#d5bfa5'],['#faf7f0','#986a45'],['#595c40','#79543b']]
-  ]
-};
+
 </script>
 <script>
 const nomCouleurFinal=name;
@@ -829,5 +721,5 @@ if(r>=190 && g>=160 && b>=125 && r-g>=15 && r-g<=45 && g-b>=10 && g-b<=45)return
   return nomCouleurFinal(h);
 };
 </script>
-<script type="module" src="./account.js?v=universe-nav1"></script></body>
+<script type="module" src="./account.js?v=secure-analysis1"></script></body>
 </html>
