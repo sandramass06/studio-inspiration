@@ -79,6 +79,7 @@ bijoux:['Collier','Bracelet','Bague','Boucles d’oreilles','Montre'],
 beaute:['Rouge à lèvres','Fard à paupières','Blush','Vernis']
 };
 const ids={
+'Canapé':'local-canape',
 'Haut / Pull':'00000000d6bc8210',
 'Sac':'0000000063488210',
 'Chaussures':'00000000c3948210',
@@ -99,8 +100,7 @@ return filesPromise;
 function loadAsset(n){
 if(cache[n])return cache[n];
 cache[n]=(async()=>{
-const files=await getFiles();
-const found=files.find(f=>f.name.includes(ids[n]));
+const found=n==='Canapé'?{name:'canape.svg'}:(await getFiles()).find(f=>f.name.includes(ids[n]));
 if(!found)throw Error();
 const img=await new Promise((ok,no)=>{
 const im=new Image();im.onload=()=>ok(im);im.onerror=no;im.src=encodeURIComponent(found.name);
@@ -182,6 +182,7 @@ if(!src.data[i+3])continue;
 const r=src.data[i],g=src.data[i+1],b=src.data[i+2];
 const delta=.2126*r+.7152*g+.0722*b-a.mean;
 let mask=Math.max(0,Math.min(1,(253-Math.min(r,g,b))/20));
+if(n==='Canapé')mask=Math.max(0,Math.min(1,(b-r-5)/15));
 if((n==='Sac'||n==='Petit sac')&&Math.max(r,g,b)-Math.min(r,g,b)>25&&r>b+15)mask*=.15;
 for(let j=0;j<3;j++){
 const center=target[j]*(light>220?.94:1);
