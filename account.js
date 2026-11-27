@@ -43,8 +43,14 @@ async function access(){
  diag('Session vérifiée');
 }
 function failure(){hide();say('Connexion temporairement indisponible. Réessayez.');diag('Service indisponible');form.hidden=false;form.querySelector('button').disabled=false;}
-document.querySelectorAll('[data-universe]').forEach(a=>a.addEventListener('click',()=>selectedUniverse=a.dataset.universe));
-enter.onclick=()=>{if(selectedUniverse){el('universe').value=selectedUniverse;el('universe').dispatchEvent(new Event('change'));}};
+function openUniverse(value){
+ if(atelier.hidden||enter.hidden)return false;
+ const select=el('universe');
+ if(value&&Array.from(select.options).some(o=>o.value===value)){select.value=value;select.dispatchEvent(new Event('change',{bubbles:true}));}
+ location.hash='atelier';atelier.scrollIntoView({block:'start'});return true;
+}
+document.querySelectorAll('[data-universe]').forEach(a=>a.addEventListener('click',e=>{selectedUniverse=a.dataset.universe;if(openUniverse(selectedUniverse))e.preventDefault();}));
+enter.onclick=e=>{if(openUniverse(selectedUniverse))e.preventDefault();};
 form.onsubmit=async e=>{e.preventDefault();if(busy)return;busy=true;const b=form.querySelector('button');b.disabled=true;
  try{await api('/auth/v1/otp?redirect_to='+encodeURIComponent(location.origin+location.pathname+'?auth_return=1'),{method:'POST',body:{email:el('account-email').value.trim(),create_user:true}});say('Consulte ta boîte e-mail pour te connecter.');}
  catch(e){say(e.status===429?'Trop de demandes. Patientez avant de réessayer.':'Envoi indisponible. Réessayez.');}finally{busy=false;b.disabled=false;}};
