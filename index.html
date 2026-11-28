@@ -476,6 +476,15 @@ const visual=box.querySelector('.visual');
 const advice=box.querySelector('.advice');
 if(!visual||!advice||!extras[s])return;
 extras[s].forEach(([n,c])=>{
+const palette=Array.from(box.querySelectorAll('.chip')).map(el=>el.style.backgroundColor.match(/\d+/g)).filter(v=>v&&v.length>=3).map(v=>hex(v.slice(0,3).map(Number)));
+if(palette.length){
+ const accent=palette[Math.min(2,palette.length-1)];
+ const neutral=palette[Math.min(1,palette.length-1)];
+ if(['Foulard','Lunettes de soleil','Ceinture'].includes(n))c=n==='Foulard'?accent:neutral;
+ if(['Créoles','Collier','Bracelet'].includes(n)){
+ const [r,g,b]=rgb(palette[0]);c=b>r+12?'#bdb6ae':'#b89a62';
+ }
+}
 if(n==='Ceinture'){
 const sac=Array.from(advice.children).find(e=>/^(Ton élément — )?Sac/i.test(e.textContent));
 const chips=Array.from(box.querySelectorAll('.chip'));
