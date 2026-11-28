@@ -33,7 +33,7 @@ small{color:#75675e}
 </head>
 <body>
 <main>
-<h1>Studio Inspiration</h1>
+<h1>Studio Inspiration</h1><section id="account-panel" class="choice" aria-label="Mon compte"><h2>Mon compte</h2><p id="account-email-label"></p><form id="account-form"><label for="account-email">Adresse e-mail</label><input id="account-email" type="email" autocomplete="email" required style="width:100%;padding:12px;border:1px solid #d5c8bb;border-radius:10px"><button type="submit">Recevoir mon lien de connexion</button></form><p id="account-message" role="status">Chargement de la connexion…</p><button id="account-logout" type="button" hidden>Me déconnecter</button><button id="account-buy" type="button" hidden>Obtenir l'accès complet</button></section>
 <p>Imagine de nouvelles associations à partir de ce que tu possèdes.</p>
 <strong>Choisis ton univers</strong>
 <select id="universe">
@@ -792,5 +792,6 @@ if(r>=190 && g>=160 && b>=125 && r-g>=15 && r-g<=45 && g-b>=10 && g-b<=45)return
   return nomCouleurFinal(h);
 };
 </script>
+<script type="module" src="./account.js"></script>
 </body>
 </html>
