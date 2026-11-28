@@ -30,24 +30,50 @@ small{color:#75675e}
   .holder{height:160px;padding:8px}.holder canvas,.holder img{width:100%;height:100%;object-fit:contain}.visual>div{min-width:0;line-height:1.5}
   .holder{height:140px;padding:4px}.visual{gap:8px;padding:12px}.visual>div>div:nth-child(2){font-weight:600}.harmony>strong{display:block;font-family:Georgia,serif;font-size:21px;padding:6px 0 10px;border-bottom:1px solid #e6ded5}.advice{font-size:13px;line-height:1.5}
 </style>
-</head>
+<link rel="stylesheet" href="./commercial.css"><style>
+#atelier{border:1px solid #ded4c9;padding:clamp(16px,4vw,32px);box-shadow:0 8px 28px #49382e0b}
+#atelier .atelier-intro{background:linear-gradient(125deg,#eee3d6,#faf6ef);border-radius:16px;padding:22px 18px;margin-bottom:24px}
+#atelier .atelier-intro h2{font-size:clamp(25px,5vw,36px);line-height:1.15;margin:8px 0}
+#atelier .atelier-intro p{margin:0}
+#atelier .atelier-step{margin:0 0 22px}
+#atelier .atelier-step-title{display:flex;align-items:center;gap:9px;font-size:15px;font-weight:600;margin:0 0 12px}
+#atelier .atelier-step-title span{display:grid;place-items:center;border-radius:50%;width:29px;height:29px;flex:none;background:#eee3d6;color:#654c3d;font-size:12px}
+#atelier .atelier-universes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+#atelier .atelier-universes button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;min-height:94px;padding:12px 6px;border:1px solid #ded4c9;border-radius:13px;background:#fff;color:#654c3d;font:600 13px/1.3 Arial,sans-serif;cursor:pointer;text-align:center}
+#atelier .atelier-universes button[aria-pressed="true"]{background:#eee3d6;border:2px solid #8c745c;padding:11px 5px}
+#atelier .atelier-universes svg,#atelier .atelier-upload svg{width:27px;height:27px;flex:none}
+#atelier #piece{margin:0;padding:14px;border-radius:12px;background:#faf7f2}
+#atelier .atelier-upload{position:relative;display:flex;flex-direction:column;align-items:center;gap:7px;padding:24px 12px;border:1px dashed #a58c70;border-radius:15px;background:#f7f1e9;color:#654c3d;cursor:pointer;text-align:center}
+#atelier .atelier-upload svg{width:34px;height:34px}
+#atelier .atelier-upload span{font-size:13px;color:#75675e}
+#atelier .atelier-upload input{position:absolute;inset:0;width:100%;height:100%;opacity:0;margin:0;cursor:pointer}
+#atelier .atelier-upload:focus-within{outline:3px solid #a47d55;outline-offset:3px}
+#atelier #preview{margin:14px auto 0}
+#atelier #status{font-size:13px;color:#75675e;margin:10px 0 0}
+</style></head>
 <body>
 <main>
-<h1>Studio Inspiration</h1>
-<p>Imagine de nouvelles associations à partir de ce que tu possèdes.</p>
-<strong>Choisis ton univers</strong>
-<select id="universe">
+<header class="site-head"><a href="#accueil" class="brand">STUDIO <span>Inspiration</span></a><a href="#compte">Mon compte</a></header>
+<section id="accueil" class="hero"><p class="eyebrow">L'art des associations</p><h1>Réinventez ce que vous possédez.</h1><p>Une photo, des couleurs, de nouvelles idées. Explorez des harmonies personnalisées pour votre style et votre intérieur.</p><a class="cta" href="#compte">Découvrir mon accès</a><a class="secondary" href="#univers">Explorer les univers</a></section>
+<section id="univers" class="home-section"><p class="eyebrow">Quatre univers</p><h2>Inspirez votre quotidien</h2><div class="universe-grid">
+<article class="universe-card"><div class="editorial"><img src="https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&amp;fit=crop&amp;w=720&amp;q=80" alt="Vêtements et accessoires de mode" width="720" height="900" loading="lazy" decoding="async"></div><h3>Mode & vêtements</h3><p>Composez de nouvelles tenues.</p><a href="#compte" data-universe="mode">Découvrir cet univers</a></article><article class="universe-card"><div class="editorial"><img src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&amp;fit=crop&amp;w=720&amp;q=80" alt="Salon et décoration intérieure" width="720" height="900" loading="lazy" decoding="async"></div><h3>Décoration intérieure</h3><p>Harmonisez les couleurs de votre intérieur.</p><a href="#compte" data-universe="deco">Découvrir cet univers</a></article><article class="universe-card"><div class="editorial"><img src="https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&amp;fit=crop&amp;w=720&amp;q=80" alt="Produits de beauté et maquillage" width="720" height="900" loading="lazy" decoding="async"></div><h3>Beauté & maquillage</h3><p>Explorez des nuances complémentaires.</p><a href="#compte" data-universe="beaute">Découvrir cet univers</a></article><article class="universe-card"><div class="editorial"><img src="https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&amp;fit=crop&amp;w=720&amp;q=80" alt="Bijoux et accessoires" width="720" height="900" loading="lazy" decoding="async"></div><h3>Bijoux & accessoires</h3><p>Accordez les détails à votre style.</p><a href="#compte" data-universe="bijoux">Découvrir cet univers</a></article></div></section>
+<section class="home-section steps"><h2>Comment ça marche ?</h2><ol><li>Choisissez votre univers.</li><li>Importez une photo de votre élément.</li><li>Découvrez des associations et de nouvelles inspirations.</li></ol><p>Vos photos restent sur votre appareil.</p></section>
+<section id="compte" class="home-section"><div id="account-panel" aria-label="Mon compte"><p class="eyebrow">Votre espace personnel</p><h2>Retrouvez votre Studio</h2><p>Utilisez la même adresse e-mail pour retrouver votre accès sur un nouvel appareil.</p><p id="account-email-label"></p><form id="account-form"><label for="account-email">Adresse e-mail</label><input id="account-email" type="email" autocomplete="email" required placeholder="vous@exemple.fr"><button type="submit" disabled>Recevoir mon lien de connexion</button></form><p id="auth-diagnostic" role="status" style="font-size:13px">D0 — Module non démarré</p><p id="account-message" role="status" aria-live="polite">Chargement de la connexion…</p><button id="account-logout" type="button" hidden>Me déconnecter</button><button id="account-buy" type="button" hidden>Obtenir l'accès complet</button><a id="account-enter" class="cta" href="#atelier" hidden>Ouvrir mon atelier</a><button id="inspirations-open" type="button" hidden>Mes inspirations</button><p class="preview-note">Version de validation — les achats ne sont pas encore ouverts.</p></div></section>
+<section id="inspirations" hidden><h2>Mes inspirations</h2><select id="inspirations-filter"><option value="">Tous les univers</option><option value="mode">Mode</option><option value="deco">Décoration</option><option value="beaute">Maquillage</option><option value="bijoux">Bijoux et accessoires</option></select><p id="inspirations-status" role="status"></p><div id="inspirations-list"></div></section><section id="atelier" hidden><div class="atelier-intro"><p class="eyebrow">Ton espace créatif</p><h2>Mon atelier d'inspiration</h2><p>Réinvente ce que tu possèdes déjà.</p></div>
+<div class="atelier-step"><p class="atelier-step-title" id="atelier-universe-label"><span>01</span> Choisis ton univers</p>
+<div class="atelier-universes" role="group" aria-labelledby="atelier-universe-label"><button type="button" data-atelier-universe="mode" aria-pressed="true"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m8 4-5 3 3 5 3-2v10h10V10l3 2 2-5-6-3c-1 3-9 3-10 0Z" transform="translate(-1 0) scale(.95)"/></svg><span>Mode et vêtements</span></button><button type="button" data-atelier-universe="deco" aria-pressed="false"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12V8a3 3 0 0 1 3-3h8a3 3 0 0 1 3 3v4M5 18v2m14-2v2M3 12a2 2 0 0 1 4 0v2h10v-2a2 2 0 0 1 4 0v6H3Z"/></svg><span>Décoration intérieure</span></button><button type="button" data-atelier-universe="beaute" aria-pressed="false"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 1 0 0 18h2a2 2 0 0 0 1-4 2 2 0 0 1 1-4h3a2 2 0 0 0 2-2 9 9 0 0 0-9-8Z"/><path d="M7 10h.01M11 7h.01M16 8h.01M7 15h.01" stroke-width="3"/></svg><span>Beauté et maquillage</span></button><button type="button" data-atelier-universe="bijoux" aria-pressed="false"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 4-5h10l4 5-9 12ZM3 9h18M7 4l5 17 5-17"/></svg><span>Bijoux et accessoires</span></button></div>
+<select id="universe" hidden aria-label="Univers">
 <option value="mode">Mode et vêtements</option>
 <option value="deco">Décoration intérieure</option>
 <option value="bijoux">Bijoux et accessoires</option>
 <option value="beaute">Beauté et maquillage</option>
 </select>
-<strong>Quel élément souhaites-tu associer ?</strong>
-<select id="piece"></select>
-<h2>Importe ta photo</h2>
-<input type="file" id="photo" accept="image/*">
-<img id="preview" hidden>
-<p id="status">Choisis une photo.</p>
+</div>
+<div class="atelier-step"><label class="atelier-step-title" for="piece"><span>02</span> Sélectionne ton élément</label><select id="piece"></select></div>
+<div class="atelier-step"><label class="atelier-step-title" for="photo"><span>03</span> Ajoute ta photo</label>
+<label class="atelier-upload" for="photo"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="15" rx="3"/><path d="m8 6 2-3h4l2 3"/><circle cx="12" cy="13" r="4"/></svg><strong>Ajouter une photo</strong><span>Depuis ton appareil</span><input type="file" id="photo" accept="image/*"></label>
+<img id="preview" alt="Ta photo à analyser" hidden>
+<p id="status" role="status">Choisis une photo.</p></div>
 <section id="results" hidden>
 <h2>Couleurs principales</h2>
 <div id="colors" class="palette"></div>
@@ -63,16 +89,19 @@ small{color:#75675e}
 </section>
 <small>Ta photo reste sur ton appareil. Modèles générés par IA. Couleurs approximatives.</small>
 <p><small>Version 0.9</small></p>
-</main>
+</section><footer class="site-footer">Studio Inspiration · Version de validation</footer></main>
 <script>
 const $=id=>document.getElementById(id);
 const items={
 mode:['Pull','Gilet / Cardigan','T-shirt / Chemisier','Pantalon / Jean','Jupe','Robe','Veste / Manteau','Chaussures','Sac','Autre accessoire'],
-deco:['Canapé','Fauteuil','Mur','Rideaux','Tapis','Meuble'],
+deco:['Canapé','Fauteuil','Mur','Rideaux','Tapis','Meuble','Coussins'],
 bijoux:['Collier','Bracelet','Bague','Boucles d’oreilles','Montre'],
 beaute:['Rouge à lèvres','Fard à paupières','Blush','Vernis']
 };
+const localPhotos={"Mur":"mur","Rideaux":"rideaux","Fauteuil":"fauteuil","Meuble":"meuble","Coussins":"coussins","Tapis":"tapis","Rouge à lèvres":"rouge-levres","Fard à paupières":"fard","Blush":"blush","Vernis":"vernis","Collier":"collier","Bracelet":"bracelet","Bague":"bague","Boucles d’oreilles":"boucles","Montre":"montre"};
 const ids={
+...localPhotos,
+'Canapé':'local-canape',
 'Haut / Pull':'00000000d6bc8210',
 'Sac':'0000000063488210',
 'Chaussures':'00000000c3948210',
@@ -85,16 +114,37 @@ const ids={
 'Sac souple':'000000000c088210'
 };
 const cache={};
-let filesPromise;
-function getFiles(){
-if(!filesPromise)filesPromise=fetch('https://api.github.com/repos/sandramass06/studio-inspiration/contents/').then(r=>{if(!r.ok)throw Error();return r.json()}).catch(()=>{filesPromise=null;return []});
-return filesPromise;
+const modeFiles=[{"name":"Bottines.png"},{"name":"Debardeur.png"},{"name":"Mocassins.png"},{"name":"Sac bandoulière.png"},{"name":"Teeshirt.png"},{"name":"Veste.png"},{"name":"file_000000000c088210ac16f1f22d431561.png"},{"name":"file_000000000cc88210b34c9132d92d9bca.png"},{"name":"file_0000000016bc821098a5a9f8046e6006.png"},{"name":"file_0000000038bc8210b1e61edd08e0c822.png"},{"name":"file_000000005d48821087e5c1a5e1425751.png"},{"name":"file_000000005e988210bccaf268ab607ef9.png"},{"name":"file_00000000602c8210a1a66d054fe1806d.png"},{"name":"file_0000000063488210b3e7e30044049efd.png"},{"name":"file_0000000073088210bfcc31e391173203.png"},{"name":"file_00000000774082109a5b8dfb11d0ff30.png"},{"name":"file_000000007dc08210bc3f854bf034cabc.png"},{"name":"file_000000008d7082108aa74234060f45e2.png"},{"name":"file_00000000918482108f3a1ab38cf96688.png"},{"name":"file_0000000097f08210aa29a6f302c8a4dd.png"},{"name":"file_0000000098e48210b53b6381167e9988.png"},{"name":"file_00000000a12c8210983485cadbc712fb.png"},{"name":"file_00000000b3a08210bb42986a0841c7f2.png"},{"name":"file_00000000b5e08210902b84d5d05a1913.png"},{"name":"file_00000000b9408210b1f218fdff1c4dab.png"},{"name":"file_00000000c3948210abe5c7fac8bd3818.png"},{"name":"file_00000000c80482108a94fdd2c8114903.png"},{"name":"file_00000000c96c8210b627f445de58132d.png"},{"name":"file_00000000cae08210808e7d36520decf5.png"},{"name":"file_00000000d0d08210b4bf5483bdf8c998.png"},{"name":"file_00000000d39882108187e6fcc471c50d.png"},{"name":"file_00000000d66c821095d4d1be60844700.png"},{"name":"file_00000000d6bc8210af2e6f7929f20ea7.png"},{"name":"file_00000000eb54821097c63b6e3a6fa353.png"},{"name":"file_00000000f3248210a3436ef2caa3663e.png"}];
+function getFiles(){return Promise.resolve(modeFiles);}
+function localMask(n,r,g,b,x,y){
+const clamp=v=>Math.max(0,Math.min(1,v));
+const pink=clamp((r-g-12)/25)*clamp((b-g+12)/18);
+const blue=clamp((b-r-4)/18);
+const teal=clamp((g-r-5)/18);
+const tan=clamp((r-b-16)/30)*clamp((245-r)/25);
+const inside=(l,t,rr,bb)=>x>=l&&x<=rr&&y>=t&&y<=bb?1:0;
+switch(n){
+case 'Mur':return pink*inside(0,0,1,.82);
+case 'Fauteuil':return blue*inside(.04,.02,.96,.84);
+case 'Rideaux':return tan*inside(.09,.08,.92,.98);
+case 'Meuble':return tan*inside(.04,.13,.96,.76);
+case 'Coussins':return Math.max(pink,tan)*inside(.02,.03,.98,.88);
+case 'Tapis':return Math.max(teal,blue)*inside(.01,.03,.99,.87);
+case 'Rouge à lèvres':return pink*inside(.25,0,.75,.43);
+case 'Fard à paupières':return Math.max(pink,tan)*inside(.15,.34,.85,.91);
+case 'Blush':return pink*inside(.12,.30,.88,.94);
+case 'Vernis':return pink*inside(.12,.42,.88,.95);
+case 'Montre':return clamp((1-Math.hypot((x-.50)/.31,(y-.50)/.27))*12)*clamp((r-g-5)/12)*clamp((b-g+24)/18);
+case 'Bague':case 'Collier':case 'Bracelet':case 'Boucles d’oreilles':{
+const region=n==='Bague'?inside(.25,.15,.77,.60):n==='Collier'?inside(.32,.55,.68,.96):n==='Bracelet'?inside(.02,.20,.98,.90):inside(.12,.48,.88,.94);
+return region*clamp((r-g-5)/12)*clamp((b-g+24)/18)*clamp((245-Math.min(r,g,b))/20);
 }
+default:return 0;
+}}
 function loadAsset(n){
 if(cache[n])return cache[n];
 cache[n]=(async()=>{
-const files=await getFiles();
-const found=files.find(f=>f.name.includes(ids[n]));
+const found=localPhotos[n]?{name:'studio-'+localPhotos[n]+'.png'}:n==='Canapé'?{name:'canape.svg'}:(await getFiles()).find(f=>f.name.includes(ids[n]));
 if(!found)throw Error();
 const img=await new Promise((ok,no)=>{
 const im=new Image();im.onload=()=>ok(im);im.onerror=no;im.src=encodeURIComponent(found.name);
@@ -106,6 +156,7 @@ c.height=Math.max(1,Math.round(img.height*s));
 const x=c.getContext('2d');
 x.drawImage(img,0,0,c.width,c.height);
 const d=x.getImageData(0,0,c.width,c.height);
+if(localPhotos[n]){let sum=0,weight=0;for(let i=0;i<d.data.length;i+=4){const p=i/4,R=d.data[i],G=d.data[i+1],B=d.data[i+2];const m=localMask(n,R,G,B,(p%c.width)/c.width,Math.floor(p/c.width)/c.height);sum+=m*(.2126*R+.7152*G+.0722*B);weight+=m;}return {data:d,mean:weight?sum/weight:160};}
 let l=c.width,r=0,t=c.height,b=0,sum=0,count=0;
 for(let y=0;y<c.height;y++)for(let z=0;z<c.width;z++){
 const i=(y*c.width+z)*4;
@@ -176,10 +227,14 @@ if(!src.data[i+3])continue;
 const r=src.data[i],g=src.data[i+1],b=src.data[i+2];
 const delta=.2126*r+.7152*g+.0722*b-a.mean;
 let mask=Math.max(0,Math.min(1,(253-Math.min(r,g,b))/20));
+if(localPhotos[n]){const p=i/4;mask=localMask(n,r,g,b,(p%src.width)/src.width,Math.floor(p/src.width)/src.height);}
+if(n==='Canapé')mask=Math.max(0,Math.min(1,(b-r-5)/15));
 if((n==='Sac'||n==='Petit sac')&&Math.max(r,g,b)-Math.min(r,g,b)>25&&r>b+15)mask*=.15;
 for(let j=0;j<3;j++){
 const center=target[j]*(light>220?.94:1);
-const v=Math.max(0,Math.min(255,center+delta*(delta<0?(light<65?.35:.78):(light<65?.5:.4))));
+const jewel=['Bague','Collier','Bracelet','Boucles d’oreilles'].includes(n);
+const shirt=n==='Chemisier';
+const v=Math.max(0,Math.min(255,center+delta*(jewel?(light<65?.22:.55):(shirt?(delta<0?.55:.20):(delta<0?(light<65?.35:.78):(light<65?.5:.4))))));
 d.data[i+j]=src.data[i+j]*(1-mask)+v*mask;
 }}
 c.getContext('2d').putImageData(d,0,0);
@@ -203,8 +258,8 @@ return e;
 function roles(style){
 const p=$('piece').value,u=$('universe').value;
 if(u!=='mode'){
-const rest=u==='deco'?['Canapé','Mur','Coussins','Tapis']:items[u];
-return [p,...rest.filter(n=>n!==p).slice(0,3)];
+const rest=items[u].filter(n=>n!==p);const offset=(style*3)%rest.length;
+return [p,...rest.slice(offset).concat(rest.slice(0,offset)).slice(0,3)];
 }
 const bottom=['Pantalon / Jean','Jupe','Jean droit'][style];
 const bag=['Sac','Petit sac','Sac souple'][style];
@@ -217,65 +272,19 @@ if(p==='Robe')return [p,'Veste / Manteau',bag,shoes];
 if(p==='Veste / Manteau')return [p,bottom,bag,shoes];
 return [p,'Haut / Pull',bottom,shoes];
 }
-function show(h){
+let analysisRequest=0;
+async function show(h){
 current=h;
 $('selected').innerHTML='<div class="sample" style="background:'+h+'"></div><strong>'+name(h)+' — '+h+'</strong>';
-const neutral=Math.max(...rgb(h))-Math.min(...rgb(h))<35;
-const opposite=hex(rgb(h).map(v=>255-v));
-const palettes=[
-['Chic et élégant',[h,'#f5f0e5','#b89a62','#252525']],
-['Doux et féminin',[h,neutral?'#d8a6b2':mix(h,'#ffffff',.65),'#f5e9e2','#bdb6ae']],
-['Naturel et moderne',[h,neutral?'#a5b39a':mix(opposite,'#b5b09a',.65),'#d5bfa5','#faf7f0']]
-];
-  palettes.forEach(([title,list],style)=>{
-const alternatives=[
-['#722f37','#243b53','#b89a62','#f5f0e5'],
-['#d8a6b2','#bdb6ae','#c5b5d8','#f5e9e2'],
-['#a5b39a','#d5bfa5','#526b65','#faf7f0']
-][style];
-const distance=(a,b)=>Math.hypot(...rgb(a).map((v,i)=>v-rgb(b)[i]));
-for(let i=1;i<list.length;i++){
-if(list.slice(0,i).some(c=>distance(c,list[i])<55)){
-list[i]=alternatives.find(a=>list.slice(0,i).every(c=>distance(c,a)>=55))||list[i];
-}
-}
-});
-  palettes.forEach(([title,list])=>{
-const choices=['#d5bfa5','#526b65','#d8a6b2','#243b53','#a5b39a','#722f37','#f5f0e5','#795239','#b89a62','#252525'];
-for(let i=1;i<list.length;i++){
-const used=list.slice(0,i);
-const valid=c=>used.every(a=>name(a)!==name(c)&&Math.hypot(...rgb(a).map((v,j)=>v-rgb(c)[j]))>=45);
-if(!valid(list[i])){
-list[i]=choices.find(valid)||list[i];
-}
-}
-});
-  
-if($('universe').value==='mode'){
-  const couleur=name(h).toLowerCase();
-  let famille='beige';
-  if(/noir/.test(couleur))famille='noir';
-  else if(/blanc|écru|ivoire/.test(couleur))famille='blanc';
-  else if(/gris/.test(couleur))famille='gris';
-  else if(/kaki|olive/.test(couleur))famille='kaki';
-  else if(/marine/.test(couleur))famille='marine';
-  else if(/terracotta|orange|rouille/.test(couleur))famille='terracotta';
-  else if(/marron|camel|chocolat|brun/.test(couleur))famille='marron';
-  else if(/bordeaux|rouge/.test(couleur))famille='rouge';
-  else if(/rose|lilas|violet/.test(couleur))famille='rose';
-  else if(/vert/.test(couleur))famille='vert';
-  else if(/bleu/.test(couleur))famille='bleu';
-  palettes.forEach((palette,style)=>{
-    const variantes=harmoniesMode[famille][style];
-    const tour=rotationTenues[style]%variantes.length;
-    const [haut,accessoire]=variantes[tour];
-    palette[1]=[h,haut,accessoire,style===2?haut:accessoire];
-  });
-}
-
-  const own=document.querySelector('input[name="display"]:checked').value==='photo';
+const request=++analysisRequest;
+$('harmonies').textContent='Analyse sécurisée en cours…';
+let palettes;
+try{({palettes}=await window.studioAnalyze(h,$('universe').value,rotationTenues.map(v=>v%3)));}catch(e){if(request===analysisRequest)$('harmonies').textContent='Analyse indisponible. Vérifie ta connexion et ton accès.';return false;}
+if(request!==analysisRequest||current!==h)return false;
+const own=document.querySelector('input[name="display"]:checked').value==='photo';
 $('harmonies').replaceChildren();
 palettes.forEach(([title,list],style)=>{
+if($('universe').value==='mode'&&new Set(list.slice(1)).size===1){const neutral=list[1];const alternative=mix(h,neutral,.25);list=[list[0],neutral,alternative,neutral];}
 const box=document.createElement('div');box.className='harmony';
 const head=document.createElement('strong');head.textContent=title;
 const row=document.createElement('div');row.className='palette';
@@ -301,7 +310,7 @@ $('universe').onchange=()=>{pieces();if(current)show(current)};
 $('piece').onchange=()=>{if(current)show(current)};
 $('photo').onchange=function(){
 if(!this.files[0])return;
-current=null;$('results').hidden=true;$('preview').hidden=true;
+analysisRequest++;current=null;$('results').hidden=true;$('preview').hidden=true;
 $('status').textContent='Analyse en cours...';
 if(url)URL.revokeObjectURL(url);
 url=URL.createObjectURL(this.files[0]);
@@ -322,7 +331,7 @@ const top=Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,5);
 $('colors').replaceChildren();top.forEach(([h])=>$('colors').append(swatch(h,true)));
 img.hidden=false;$('results').hidden=false;
 show(top.length?top[0][0]:'#ffffff');
-$('status').textContent='Touche directement la couleur de ton vêtement.';
+$('status').textContent='Touche directement la couleur que tu souhaites associer sur ta photo.';
 }catch(e){$('status').textContent='Analyse impossible.'}
 };
 img.onerror=()=>$('status').textContent='Photo illisible.';
@@ -344,8 +353,8 @@ if(d[3]>=128)show(hex([d[0],d[1],d[2]]));
 'Sac souple':'Sac cabas souple'
 };
 const previousShow=show;
-show=function(h){
-previousShow(h);
+show=async function(h){
+if(await previousShow(h)===false)return false;
 if($('universe').value!=='mode')return;
 document.querySelectorAll('.harmony').forEach(box=>{
 const labels=box.querySelectorAll('.visual>div>div:nth-child(2)');
@@ -372,8 +381,8 @@ if(e.textContent==='Version 0.9')e.textContent='Version 1.0';
 'Robe midi':'91848210'
 });
 const showV11=show;
-show=function(h){
-showV11(h);
+show=async function(h){
+if(await showV11(h)===false)return false;
 };
 document.querySelectorAll('small').forEach(e=>{
 if(e.textContent==='Version 1.0')e.textContent='Version 1.1';
@@ -422,8 +431,8 @@ return [p,['Pantalon / Jean','Jupe','Jean droit'][style],['Sac','Petit sac','Sac
 return rolesV12(style);
 };
   const showCardigan=show;
-show=function(h){
-showCardigan(h);
+show=async function(h){
+if(await showCardigan(h)===false)return false;
 if($('universe').value!=='mode'||$('piece').value!=='Gilet / Cardigan')return;
 document.querySelectorAll('.harmony').forEach(box=>{
 const visual=box.querySelector('.visual');
@@ -456,8 +465,8 @@ document.head.appendChild(centerStyle);
 'Lunettes de soleil':'eb548210'
 });
 const showAccessories=show;
-show=function(h){
-showAccessories(h);
+show=async function(h){
+if(await showAccessories(h)===false)return false;
 if($('universe').value!=='mode')return;
 const extras=[
 [['Créoles','#b89a62'],['Ceinture','#795239']],
@@ -469,6 +478,15 @@ const visual=box.querySelector('.visual');
 const advice=box.querySelector('.advice');
 if(!visual||!advice||!extras[s])return;
 extras[s].forEach(([n,c])=>{
+const palette=Array.from(box.querySelectorAll('.chip')).map(el=>el.style.backgroundColor.match(/\d+/g)).filter(v=>v&&v.length>=3).map(v=>hex(v.slice(0,3).map(Number)));
+if(palette.length){
+ const accent=palette[Math.min(2,palette.length-1)];
+ const neutral=palette[Math.min(1,palette.length-1)];
+ if(['Foulard','Lunettes de soleil','Ceinture'].includes(n))c=n==='Foulard'?accent:neutral;
+ if(['Créoles','Collier','Bracelet'].includes(n)){
+ const [r,g,b]=rgb(palette[0]);c=b>r+12?'#bdb6ae':'#b89a62';
+ }
+}
 if(n==='Ceinture'){
 const sac=Array.from(advice.children).find(e=>/^(Ton élément — )?Sac/i.test(e.textContent));
 const chips=Array.from(box.querySelectorAll('.chip'));
@@ -491,8 +509,8 @@ advice.append(line);
 });
 };
   const showLayout=show;
-show=function(h){
-showLayout(h);
+show=async function(h){
+if(await showLayout(h)===false)return false;
 if($('universe').value!=='mode')return;
 document.querySelectorAll('.visual').forEach(v=>{
 const items=Array.from(v.children);
@@ -592,9 +610,8 @@ roles=function(style){
   return tenueInitiale(style);
 };
 const afficherTenues=show;
-show=function(h){
-  afficherTenues(h);
-  if($('universe').value!=='mode')return;
+show=async function(h){
+  if(await afficherTenues(h)===false)return false;
   document.querySelectorAll('.harmony').forEach((box,i)=>{
     if(i>2)return;
     const ancien=box.querySelector('.autre-tenue');
@@ -602,7 +619,7 @@ show=function(h){
     const bouton=document.createElement('button');
     bouton.type='button';
     bouton.className='autre-tenue';
-    bouton.textContent='Voir une autre tenue';
+    bouton.textContent=$('universe').value==='mode'?'Voir une autre tenue':'Voir une autre harmonie';
     bouton.style.cssText='display:block;width:100%;margin-top:16px;padding:14px;border:1px solid #c9b9a5;border-radius:12px;background:#f1e9df;color:#51463b;cursor:pointer;';
     bouton.onclick=function(){
       choixTenue[i]=1-choixTenue[i];
@@ -635,9 +652,8 @@ roles=function(style){
   });
 };
 const showRotation=show;
-show=function(h){
-  showRotation(h);
-  if($('universe').value!=='mode')return;
+show=async function(h){
+  if(await showRotation(h)===false)return false;
   document.querySelectorAll('.autre-tenue').forEach((bouton,i)=>{
     bouton.onclick=function(){
       rotationTenues[i]++;
@@ -647,10 +663,13 @@ show=function(h){
 };
 </script>
 <script>
-async function enregistrerTenue(box,i){
-  const bouton=box.querySelector('.enregistrer-tenue');
-  bouton.disabled=true;
-  bouton.textContent='Enregistrement en cours...';
+async function enregistrerTenue(box,i,cloud=false){
+const universe=$('universe').value;const title=box.querySelector('strong')?.textContent||'Mon inspiration';
+  const bouton=box.querySelector(cloud?'.sauvegarder-inspiration':'.enregistrer-tenue');
+  const controls=box.querySelectorAll('.enregistrer-tenue,.sauvegarder-inspiration');
+  if(Array.from(controls).some(b=>b.disabled))return;
+  controls.forEach(b=>b.disabled=true);
+  bouton.textContent=cloud?'Sauvegarde en cours…':'Téléchargement en cours…';
   try{
     if(!window.html2canvas){
       await new Promise((resolve,reject)=>{
@@ -662,7 +681,7 @@ async function enregistrerTenue(box,i){
       });
     }
     const canvas=await html2canvas(box,{
-      scale:2,
+      scale:3,
       backgroundColor:'#faf7f0',
       useCORS:true,
       onclone:doc=>{
@@ -687,10 +706,11 @@ async function enregistrerTenue(box,i){
     ctx.textAlign='center';
     ctx.fillText('Studio Inspiration',image.width/2,60);
     ctx.font='26px Georgia';
-    ctx.fillText('Ma tenue personnalisée',image.width/2,105);
+    ctx.fillText(universe==='mode'?'Ma tenue personnalisée':'Mon inspiration personnalisée',image.width/2,105);
     ctx.drawImage(canvas,0,140);
+    if(cloud){const small=document.createElement('canvas');const scale=Math.min(1,2400/Math.max(image.width,image.height));small.width=Math.round(image.width*scale);small.height=Math.round(image.height*scale);small.getContext('2d').drawImage(image,0,0,small.width,small.height);let encoded=small.toDataURL('image/jpeg',.96);for(const quality of [.92,.88,.84]){if(encoded.length<=2800000)break;encoded=small.toDataURL('image/jpeg',quality);}if(encoded.length>2800000)throw Error('image_too_large');await window.studioSaveInspiration(universe,title,encoded);alert('Inspiration enregistrée dans ton compte.');return;}
     const lien=document.createElement('a');
-    lien.download='Studio-Inspiration-tenue-'+(i+1)+'.png';
+    lien.download='Studio-Inspiration-'+universe+'-'+(i+1)+'.png';
     lien.href=image.toDataURL('image/png');
     document.body.appendChild(lien);
     lien.click();
@@ -698,89 +718,33 @@ async function enregistrerTenue(box,i){
   }catch(e){
     alert('Enregistrement impossible. Réessaie.');
   }finally{
-    bouton.disabled=false;
-    bouton.textContent='Enregistrer ma tenue';
+    controls.forEach(b=>b.disabled=false);
+    bouton.innerHTML=cloud?inspirationHeart:inspirationDownload;
   }
 }
+const inspirationHeart='<svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8Z"/></svg> Ajouter à mes inspirations';
+const inspirationDownload='<svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m-5-5 5 5 5-5M4 16v4h16v-4"/></svg> Télécharger l’image';
 const showAvantEnregistrement=show;
-show=function(h){
-  showAvantEnregistrement(h);
-  if($('universe').value!=='mode')return;
+show=async function(h){
+  if(await showAvantEnregistrement(h)===false)return false;
   document.querySelectorAll('.harmony').forEach((box,i)=>{
     if(box.querySelector('.enregistrer-tenue'))return;
+    const style='display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin-top:10px;padding:14px;border-radius:12px;cursor:pointer;';
+    const save=document.createElement('button');
+    save.type='button';save.className='sauvegarder-inspiration';save.innerHTML=inspirationHeart;
+    save.style.cssText=style+'border:1px solid #756653;background:#756653;color:white;';
+    save.onclick=()=>enregistrerTenue(box,i,true);
+    box.appendChild(save);
     const bouton=document.createElement('button');
-    bouton.type='button';
-    bouton.className='enregistrer-tenue';
-    bouton.textContent='Enregistrer ma tenue';
-    bouton.style.cssText='display:block;width:100%;margin-top:10px;padding:14px;border:0;border-radius:12px;background:#756653;color:white;cursor:pointer;';
+    bouton.type='button';bouton.className='enregistrer-tenue';bouton.innerHTML=inspirationDownload;
+    bouton.style.cssText=style+'border:1px solid #756653;background:transparent;color:#51463b;';
     bouton.onclick=()=>enregistrerTenue(box,i);
     box.appendChild(bouton);
   });
 };
 </script>
 <script>
-const harmoniesMode={
-  noir:[
-    [['#f5f0e5','#292929'],['#722f37','#292929'],['#a8a8a8','#f5f0e5']],
-    [['#d8a6b2','#d5bfa5'],['#c5b5d8','#292929'],['#f5e9e2','#79543b']],
-    [['#a5b39a','#faf7f0'],['#a8bfd5','#faf7f0'],['#d5bfa5','#986a45']]
-  ],
-  blanc:[
-    [['#243b53','#986a45'],['#292929','#292929'],['#722f37','#79543b']],
-    [['#d8a6b2','#d5bfa5'],['#c5b5d8','#ae967c'],['#a8bfd5','#d5bfa5']],
-    [['#595c40','#986a45'],['#526b65','#d5bfa5'],['#b56549','#79543b']]
-  ],
-  gris:[
-    [['#243b53','#292929'],['#f5f0e5','#292929'],['#722f37','#292929']],
-    [['#d8a6b2','#f5f0e5'],['#c5b5d8','#faf7f0'],['#a8bfd5','#292929']],
-    [['#faf7f0','#292929'],['#a5b39a','#faf7f0'],['#526b65','#292929']]
-  ],
-  beige:[
-    [['#243b53','#79543b'],['#292929','#292929'],['#722f37','#79543b']],
-    [['#d8a6b2','#ae967c'],['#f5f0e5','#986a45'],['#a8bfd5','#79543b']],
-    [['#595c40','#986a45'],['#faf7f0','#79543b'],['#526b65','#986a45']]
-  ],
-  marron:[
-    [['#f5f0e5','#79543b'],['#243b53','#79543b'],['#292929','#292929']],
-    [['#d8a6b2','#d5bfa5'],['#a8bfd5','#f5f0e5'],['#f5e9e2','#ae967c']],
-    [['#a5b39a','#faf7f0'],['#595c40','#d5bfa5'],['#faf7f0','#986a45']]
-  ],
-  kaki:[
-    [['#f5f0e5','#292929'],['#292929','#986a45'],['#d5bfa5','#79543b']],
-    [['#d8a6b2','#d5bfa5'],['#f5e9e2','#ae967c'],['#f5f0e5','#986a45']],
-    [['#faf7f0','#986a45'],['#a5b39a','#f5f0e5'],['#d5bfa5','#79543b']]
-  ],
-  vert:[
-    [['#f5f0e5','#292929'],['#292929','#292929'],['#d5bfa5','#79543b']],
-    [['#d8a6b2','#d5bfa5'],['#f5e9e2','#ae967c'],['#faf7f0','#986a45']],
-    [['#a5b39a','#faf7f0'],['#f5f0e5','#986a45'],['#d5bfa5','#79543b']]
-  ],
-  marine:[
-    [['#f5f0e5','#79543b'],['#722f37','#79543b'],['#a8a8a8','#292929']],
-    [['#d8a6b2','#d5bfa5'],['#a8bfd5','#faf7f0'],['#f5e9e2','#ae967c']],
-    [['#faf7f0','#986a45'],['#d5bfa5','#79543b'],['#a8bfd5','#faf7f0']]
-  ],
-  bleu:[
-    [['#243b53','#243b53'],['#f5f0e5','#79543b'],['#292929','#292929']],
-    [['#d8a6b2','#d5bfa5'],['#f5e9e2','#ae967c'],['#c5b5d8','#faf7f0']],
-    [['#faf7f0','#986a45'],['#d5bfa5','#79543b'],['#243b53','#faf7f0']]
-  ],
-  rose:[
-    [['#292929','#292929'],['#243b53','#243b53'],['#f5f0e5','#79543b']],
-    [['#f5e9e2','#d5bfa5'],['#c5b5d8','#faf7f0'],['#a8a8a8','#faf7f0']],
-    [['#faf7f0','#986a45'],['#a5b39a','#d5bfa5'],['#d5bfa5','#79543b']]
-  ],
-  rouge:[
-    [['#292929','#292929'],['#f5f0e5','#79543b'],['#243b53','#243b53']],
-    [['#d8a6b2','#d5bfa5'],['#f5e9e2','#ae967c'],['#a8a8a8','#292929']],
-    [['#faf7f0','#986a45'],['#d5bfa5','#79543b'],['#a8bfd5','#faf7f0']]
-  ],
-  terracotta:[
-    [['#f5f0e5','#79543b'],['#292929','#292929'],['#d5bfa5','#79543b']],
-    [['#f5e9e2','#ae967c'],['#f5f0e5','#d5bfa5'],['#d5bfa5','#986a45']],
-    [['#a5b39a','#d5bfa5'],['#faf7f0','#986a45'],['#595c40','#79543b']]
-  ]
-};
+
 </script>
 <script>
 const nomCouleurFinal=name;
@@ -792,5 +756,35 @@ if(r>=190 && g>=160 && b>=125 && r-g>=15 && r-g<=45 && g-b>=10 && g-b<=45)return
   return nomCouleurFinal(h);
 };
 </script>
-</body>
+<script>
+(function(){
+ const select=document.getElementById('universe');
+ const buttons=Array.from(document.querySelectorAll('[data-atelier-universe]'));
+ function sync(){buttons.forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.atelierUniverse===select.value)));}
+ buttons.forEach(b=>b.addEventListener('click',()=>{if(select.value!==b.dataset.atelierUniverse){select.value=b.dataset.atelierUniverse;select.dispatchEvent(new Event('change',{bubbles:true}));}sync();}));
+ select.addEventListener('change',sync);sync();
+})();
+</script><script>
+/* Mode: coherent outfit families, independent of other universes. */
+ids['T-shirt / Chemisier']='Teeshirt.png';
+ids['Autre accessoire']=ids['Foulard'];
+const modeRolesBeforeAudit=roles;
+roles=function(style){
+ if($('universe').value!=='mode')return modeRolesBeforeAudit(style);
+ const p=$('piece').value,t=(rotationTenues[style]||0)%3;
+ const tops=[['Chemisier','Haut / Pull','T-shirt'],['Haut / Pull','Chemisier','Debardeur'],['T-shirt','Haut / Pull','Debardeur']];
+ const bottoms=[['Pantalon / Jean','Jupe','Jean droit'],['Jupe','Pantalon / Jean','Jean droit'],['Jean droit','Pantalon / Jean','Jupe']];
+ const bags=[['Sac','Petit sac','Sac bandoulière'],['Petit sac','Sac bandoulière','Sac'],['Sac souple','Sac bandoulière','Sac']];
+ const footwear=[['Escarpins','Mocassins','Bottines'],['Ballerines','Bottines','Mocassins'],['Baskets','Mocassins','Bottines']];
+ const top=tops[style][t],bottom=bottoms[style][t],bag=bags[style][t],shoe=footwear[style][t];
+ if(p==='Robe')return [p,['Blazer','Trench','Veste'][style],bag,shoe];
+ if(p==='Veste / Manteau')return [p,top,bottom,shoe];
+ if(['Pull','Gilet / Cardigan','T-shirt / Chemisier'].includes(p))return [p,bottom,bag,shoe];
+ if(['Pantalon / Jean','Jupe'].includes(p))return [p,top,bag,shoe];
+ if(p==='Sac')return [p,top,bottom,shoe];
+ if(p==='Chaussures')return [p,top,bottom,bag];
+ return [p,top,bottom,shoe];
+};
+</script>
+<script type="module" src="./account.js?v=inspirations4"></script></body>
 </html>
