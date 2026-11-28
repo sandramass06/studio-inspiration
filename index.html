@@ -233,7 +233,8 @@ if((n==='Sac'||n==='Petit sac')&&Math.max(r,g,b)-Math.min(r,g,b)>25&&r>b+15)mask
 for(let j=0;j<3;j++){
 const center=target[j]*(light>220?.94:1);
 const jewel=['Bague','Collier','Bracelet','Boucles d’oreilles'].includes(n);
-const v=Math.max(0,Math.min(255,center+delta*(jewel?(light<65?.22:.55):(delta<0?(light<65?.35:.78):(light<65?.5:.4)))));
+const shirt=n==='Chemisier';
+const v=Math.max(0,Math.min(255,center+delta*(jewel?(light<65?.22:.55):(shirt?(delta<0?.55:.20):(delta<0?(light<65?.35:.78):(light<65?.5:.4))))));
 d.data[i+j]=src.data[i+j]*(1-mask)+v*mask;
 }}
 c.getContext('2d').putImageData(d,0,0);
@@ -283,6 +284,7 @@ if(request!==analysisRequest||current!==h)return false;
 const own=document.querySelector('input[name="display"]:checked').value==='photo';
 $('harmonies').replaceChildren();
 palettes.forEach(([title,list],style)=>{
+if($('universe').value==='mode'&&new Set(list.slice(1)).size===1){const neutral=list[1];const alternative=mix(h,neutral,.25);list=[list[0],neutral,alternative,neutral];}
 const box=document.createElement('div');box.className='harmony';
 const head=document.createElement('strong');head.textContent=title;
 const row=document.createElement('div');row.className='palette';
