@@ -753,5 +753,27 @@ if(r>=190 && g>=160 && b>=125 && r-g>=15 && r-g<=45 && g-b>=10 && g-b<=45)return
  buttons.forEach(b=>b.addEventListener('click',()=>{if(select.value!==b.dataset.atelierUniverse){select.value=b.dataset.atelierUniverse;select.dispatchEvent(new Event('change',{bubbles:true}));}sync();}));
  select.addEventListener('change',sync);sync();
 })();
-</script><script type="module" src="./account.js?v=inspirations4"></script></body>
+</script><script>
+/* Mode: coherent outfit families, independent of other universes. */
+ids['T-shirt / Chemisier']='Teeshirt.png';
+ids['Autre accessoire']=ids['Foulard'];
+const modeRolesBeforeAudit=roles;
+roles=function(style){
+ if($('universe').value!=='mode')return modeRolesBeforeAudit(style);
+ const p=$('piece').value,t=(rotationTenues[style]||0)%3;
+ const tops=[['Chemisier','Haut / Pull','T-shirt'],['Haut / Pull','Chemisier','Debardeur'],['T-shirt','Haut / Pull','Debardeur']];
+ const bottoms=[['Pantalon / Jean','Jupe','Jean droit'],['Jupe','Pantalon / Jean','Jean droit'],['Jean droit','Pantalon / Jean','Jupe']];
+ const bags=[['Sac','Petit sac','Sac bandoulière'],['Petit sac','Sac bandoulière','Sac'],['Sac souple','Sac bandoulière','Sac']];
+ const footwear=[['Escarpins','Mocassins','Bottines'],['Ballerines','Bottines','Mocassins'],['Baskets','Mocassins','Bottines']];
+ const top=tops[style][t],bottom=bottoms[style][t],bag=bags[style][t],shoe=footwear[style][t];
+ if(p==='Robe')return [p,['Blazer','Trench','Veste'][style],bag,shoe];
+ if(p==='Veste / Manteau')return [p,top,bottom,shoe];
+ if(['Pull','Gilet / Cardigan','T-shirt / Chemisier'].includes(p))return [p,bottom,bag,shoe];
+ if(['Pantalon / Jean','Jupe'].includes(p))return [p,top,bag,shoe];
+ if(p==='Sac')return [p,top,bottom,shoe];
+ if(p==='Chaussures')return [p,top,bottom,bag];
+ return [p,top,bottom,shoe];
+};
+</script>
+<script type="module" src="./account.js?v=inspirations4"></script></body>
 </html>
