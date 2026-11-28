@@ -30,7 +30,27 @@ small{color:#75675e}
   .holder{height:160px;padding:8px}.holder canvas,.holder img{width:100%;height:100%;object-fit:contain}.visual>div{min-width:0;line-height:1.5}
   .holder{height:140px;padding:4px}.visual{gap:8px;padding:12px}.visual>div>div:nth-child(2){font-weight:600}.harmony>strong{display:block;font-family:Georgia,serif;font-size:21px;padding:6px 0 10px;border-bottom:1px solid #e6ded5}.advice{font-size:13px;line-height:1.5}
 </style>
-<link rel="stylesheet" href="./commercial.css"></head>
+<link rel="stylesheet" href="./commercial.css"><style>
+#atelier{border:1px solid #ded4c9;padding:clamp(16px,4vw,32px);box-shadow:0 8px 28px #49382e0b}
+#atelier .atelier-intro{background:linear-gradient(125deg,#eee3d6,#faf6ef);border-radius:16px;padding:22px 18px;margin-bottom:24px}
+#atelier .atelier-intro h2{font-size:clamp(25px,5vw,36px);line-height:1.15;margin:8px 0}
+#atelier .atelier-intro p{margin:0}
+#atelier .atelier-step{margin:0 0 22px}
+#atelier .atelier-step-title{display:flex;align-items:center;gap:9px;font-size:15px;font-weight:600;margin:0 0 12px}
+#atelier .atelier-step-title span{display:grid;place-items:center;border-radius:50%;width:29px;height:29px;flex:none;background:#eee3d6;color:#654c3d;font-size:12px}
+#atelier .atelier-universes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+#atelier .atelier-universes button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;min-height:94px;padding:12px 6px;border:1px solid #ded4c9;border-radius:13px;background:#fff;color:#654c3d;font:600 13px/1.3 Arial,sans-serif;cursor:pointer;text-align:center}
+#atelier .atelier-universes button[aria-pressed="true"]{background:#eee3d6;border:2px solid #8c745c;padding:11px 5px}
+#atelier .atelier-universes svg,#atelier .atelier-upload svg{width:27px;height:27px;flex:none}
+#atelier #piece{margin:0;padding:14px;border-radius:12px;background:#faf7f2}
+#atelier .atelier-upload{position:relative;display:flex;flex-direction:column;align-items:center;gap:7px;padding:24px 12px;border:1px dashed #a58c70;border-radius:15px;background:#f7f1e9;color:#654c3d;cursor:pointer;text-align:center}
+#atelier .atelier-upload svg{width:34px;height:34px}
+#atelier .atelier-upload span{font-size:13px;color:#75675e}
+#atelier .atelier-upload input{position:absolute;inset:0;width:100%;height:100%;opacity:0;margin:0;cursor:pointer}
+#atelier .atelier-upload:focus-within{outline:3px solid #a47d55;outline-offset:3px}
+#atelier #preview{margin:14px auto 0}
+#atelier #status{font-size:13px;color:#75675e;margin:10px 0 0}
+</style></head>
 <body>
 <main>
 <header class="site-head"><a href="#accueil" class="brand">STUDIO <span>Inspiration</span></a><a href="#compte">Mon compte</a></header>
@@ -39,21 +59,21 @@ small{color:#75675e}
 <article class="universe-card"><div class="editorial"><img src="https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&amp;fit=crop&amp;w=720&amp;q=80" alt="Vêtements et accessoires de mode" width="720" height="900" loading="lazy" decoding="async"></div><h3>Mode & vêtements</h3><p>Composez de nouvelles tenues.</p><a href="#compte" data-universe="mode">Découvrir cet univers</a></article><article class="universe-card"><div class="editorial"><img src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&amp;fit=crop&amp;w=720&amp;q=80" alt="Salon et décoration intérieure" width="720" height="900" loading="lazy" decoding="async"></div><h3>Décoration intérieure</h3><p>Harmonisez les couleurs de votre intérieur.</p><a href="#compte" data-universe="deco">Découvrir cet univers</a></article><article class="universe-card"><div class="editorial"><img src="https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&amp;fit=crop&amp;w=720&amp;q=80" alt="Produits de beauté et maquillage" width="720" height="900" loading="lazy" decoding="async"></div><h3>Beauté & maquillage</h3><p>Explorez des nuances complémentaires.</p><a href="#compte" data-universe="beaute">Découvrir cet univers</a></article><article class="universe-card"><div class="editorial"><img src="https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&amp;fit=crop&amp;w=720&amp;q=80" alt="Bijoux et accessoires" width="720" height="900" loading="lazy" decoding="async"></div><h3>Bijoux & accessoires</h3><p>Accordez les détails à votre style.</p><a href="#compte" data-universe="bijoux">Découvrir cet univers</a></article></div></section>
 <section class="home-section steps"><h2>Comment ça marche ?</h2><ol><li>Choisissez votre univers.</li><li>Importez une photo de votre élément.</li><li>Découvrez des associations et de nouvelles inspirations.</li></ol><p>Vos photos restent sur votre appareil.</p></section>
 <section id="compte" class="home-section"><div id="account-panel" aria-label="Mon compte"><p class="eyebrow">Votre espace personnel</p><h2>Retrouvez votre Studio</h2><p>Utilisez la même adresse e-mail pour retrouver votre accès sur un nouvel appareil.</p><p id="account-email-label"></p><form id="account-form"><label for="account-email">Adresse e-mail</label><input id="account-email" type="email" autocomplete="email" required placeholder="vous@exemple.fr"><button type="submit" disabled>Recevoir mon lien de connexion</button></form><p id="auth-diagnostic" role="status" style="font-size:13px">D0 — Module non démarré</p><p id="account-message" role="status" aria-live="polite">Chargement de la connexion…</p><button id="account-logout" type="button" hidden>Me déconnecter</button><button id="account-buy" type="button" hidden>Obtenir l'accès complet</button><a id="account-enter" class="cta" href="#atelier" hidden>Ouvrir mon atelier</a><button id="inspirations-open" type="button" hidden>Mes inspirations</button><p class="preview-note">Version de validation — les achats ne sont pas encore ouverts.</p></div></section>
-<section id="inspirations" hidden><h2>Mes inspirations</h2><select id="inspirations-filter"><option value="">Tous les univers</option><option value="mode">Mode</option><option value="deco">Décoration</option><option value="beaute">Maquillage</option><option value="bijoux">Bijoux et accessoires</option></select><p id="inspirations-status" role="status"></p><div id="inspirations-list"></div></section><section id="atelier" hidden><h2>Mon atelier d'inspiration</h2>
-<p>Imagine de nouvelles associations à partir de ce que tu possèdes.</p>
-<strong>Choisis ton univers</strong>
-<select id="universe">
+<section id="inspirations" hidden><h2>Mes inspirations</h2><select id="inspirations-filter"><option value="">Tous les univers</option><option value="mode">Mode</option><option value="deco">Décoration</option><option value="beaute">Maquillage</option><option value="bijoux">Bijoux et accessoires</option></select><p id="inspirations-status" role="status"></p><div id="inspirations-list"></div></section><section id="atelier" hidden><div class="atelier-intro"><p class="eyebrow">Ton espace créatif</p><h2>Mon atelier d'inspiration</h2><p>Réinvente ce que tu possèdes déjà.</p></div>
+<div class="atelier-step"><p class="atelier-step-title" id="atelier-universe-label"><span>01</span> Choisis ton univers</p>
+<div class="atelier-universes" role="group" aria-labelledby="atelier-universe-label"><button type="button" data-atelier-universe="mode" aria-pressed="true"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m8 4-5 3 3 5 3-2v10h10V10l3 2 2-5-6-3c-1 3-9 3-10 0Z" transform="translate(-1 0) scale(.95)"/></svg><span>Mode et vêtements</span></button><button type="button" data-atelier-universe="deco" aria-pressed="false"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12V8a3 3 0 0 1 3-3h8a3 3 0 0 1 3 3v4M5 18v2m14-2v2M3 12a2 2 0 0 1 4 0v2h10v-2a2 2 0 0 1 4 0v6H3Z"/></svg><span>Décoration intérieure</span></button><button type="button" data-atelier-universe="beaute" aria-pressed="false"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 1 0 0 18h2a2 2 0 0 0 1-4 2 2 0 0 1 1-4h3a2 2 0 0 0 2-2 9 9 0 0 0-9-8Z"/><path d="M7 10h.01M11 7h.01M16 8h.01M7 15h.01" stroke-width="3"/></svg><span>Beauté et maquillage</span></button><button type="button" data-atelier-universe="bijoux" aria-pressed="false"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 4-5h10l4 5-9 12ZM3 9h18M7 4l5 17 5-17"/></svg><span>Bijoux et accessoires</span></button></div>
+<select id="universe" hidden aria-label="Univers">
 <option value="mode">Mode et vêtements</option>
 <option value="deco">Décoration intérieure</option>
 <option value="bijoux">Bijoux et accessoires</option>
 <option value="beaute">Beauté et maquillage</option>
 </select>
-<strong>Quel élément souhaites-tu associer ?</strong>
-<select id="piece"></select>
-<h2>Importe ta photo</h2>
-<input type="file" id="photo" accept="image/*">
-<img id="preview" hidden>
-<p id="status">Choisis une photo.</p>
+</div>
+<div class="atelier-step"><label class="atelier-step-title" for="piece"><span>02</span> Sélectionne ton élément</label><select id="piece"></select></div>
+<div class="atelier-step"><label class="atelier-step-title" for="photo"><span>03</span> Ajoute ta photo</label>
+<label class="atelier-upload" for="photo"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="15" rx="3"/><path d="m8 6 2-3h4l2 3"/><circle cx="12" cy="13" r="4"/></svg><strong>Ajouter une photo</strong><span>Depuis ton appareil</span><input type="file" id="photo" accept="image/*"></label>
+<img id="preview" alt="Ta photo à analyser" hidden>
+<p id="status" role="status">Choisis une photo.</p></div>
 <section id="results" hidden>
 <h2>Couleurs principales</h2>
 <div id="colors" class="palette"></div>
@@ -725,5 +745,13 @@ if(r>=190 && g>=160 && b>=125 && r-g>=15 && r-g<=45 && g-b>=10 && g-b<=45)return
   return nomCouleurFinal(h);
 };
 </script>
-<script type="module" src="./account.js?v=inspirations4"></script></body>
+<script>
+(function(){
+ const select=document.getElementById('universe');
+ const buttons=Array.from(document.querySelectorAll('[data-atelier-universe]'));
+ function sync(){buttons.forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.atelierUniverse===select.value)));}
+ buttons.forEach(b=>b.addEventListener('click',()=>{if(select.value!==b.dataset.atelierUniverse){select.value=b.dataset.atelierUniverse;select.dispatchEvent(new Event('change',{bubbles:true}));}sync();}));
+ select.addEventListener('change',sync);sync();
+})();
+</script><script type="module" src="./account.js?v=inspirations4"></script></body>
 </html>
